@@ -48,13 +48,17 @@ const get_derived = async (lid) => {
     return result;
 };
 
-const select_text = ( arr ) => {
+const select_text = ( arr, show_fallback = false ) => {
     const languages = Object.keys( arr );
     if ( languages.length === 0 ) { return ''; };
     if ( languages.includes( language )) {
         return arr[ language ].value;
     } else {
-        return arr[ languages[0] ].value;
+        if (show_fallback) {
+            return '(' + languages[0] + ': ' + arr[ languages[0] ].value + ')';
+        } else {
+            return arr[ languages[0] ].value;
+        }
     }
 };
 
@@ -84,14 +88,15 @@ const display = async (where, lid) => {
     if (senses.length === 0) {
         senses_text = '';
     } else if (senses.length === 1) {
-        senses_text = select_text( senses[0].glosses );
+        senses_text = select_text( senses[0].glosses, true );
     } else {
         let sensecount = 0;
         for (let sense of senses) {
             sensecount++;
-            const gloss = select_text( sense.glosses );
+            const gloss = select_text( sense.glosses, true );
             senses_text += '(' + sensecount.toString() + ') ' + gloss + ' ';
             // TODO: add Wikipedia links to senses
+            // TODO: use item for this sense for senses!
         }
     }
     put(where, 'lemma', lemma);
