@@ -59,7 +59,7 @@ const get_alphaprev = async (lid) => {
     if (!('alphaprev' in lexeme)) {
         const focuslang_qid = lexeme.language;
         const focus_lang = Object.keys( lexeme.lemmas )[0].toLowerCase();
-        const focus_lemma = select_text( lexeme.lemmas );
+        const focus_lemma = select_text( lexeme.lemmas ).replace(/[\u200E]/g, '').replace(/[\u200F]/g, '');
         const alphaprev_lids = await ask_sparql(`select ?lexeme {
                 ?lexeme a ontolex:LexicalEntry .
                 ?lexeme wikibase:lemma ?lemma .
@@ -89,7 +89,7 @@ const get_alphanext = async (lid) => {
     if (!('alphanext' in lexeme)) {
         const focuslang_qid = lexeme.language;
         const focus_lang = Object.keys( lexeme.lemmas )[0].toLowerCase();
-        const focus_lemma = select_text( lexeme.lemmas );
+        const focus_lemma = select_text( lexeme.lemmas ).replace(/[\u200E]/g, '').replace(/[\u200F]/g, '');
         const alphanext_lids = await ask_sparql(`select ?lexeme {
                 ?lexeme a ontolex:LexicalEntry .
                 ?lexeme wikibase:lemma ?lemma .
