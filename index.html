@@ -223,6 +223,9 @@ const display_list = async (where, lids) => {
 };
 
 const move_to = async (lid) => {
+    if (is_lsid(lid)) {
+        lid = lid_from_lsid(lid);
+    }
     const url = new URL(window.location);
     url.searchParams.set('lid', lid);
     window.history.pushState({ 'lid': lid }, '', url);
@@ -330,10 +333,10 @@ const presskey = () => {
         move_to( derived_lids[0] );
     }
     if ([37, 65, 100, 52].includes(key)) {
-        console.log('meaning prev');
+        move_to( meaning_ring[ meaning_ring.length-1 ] );
     }
     if ([39, 68, 102, 54].includes(key)) {
-        console.log('meaning next');
+        move_to( meaning_ring[1] );
     }
     if ([90, 97, 49].includes(key)) {
         move_to( etymon_lids[0] );
@@ -453,7 +456,7 @@ audio {
             <span id="alphaprev_sense"></span>
         </div>
         <div id="derived"></div>
-        <div id="meanprev">
+        <div id="meanprev" onclick="move_to( meaning_ring[ meaning_ring.length-1 ] );">
             <b id="meanprev_lemma"></b>
             &mdash;
             <i id="meanprev_language"></i>
@@ -472,7 +475,7 @@ audio {
             <button id="play_button" onclick="play();">▶</button>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
-        <div id="meannext">
+        <div id="meannext" onclick="move_to( meaning_ring[1] );">
             <b id="meannext_lemma"></b>
             &mdash;
             <i id="meannext_language"></i>
