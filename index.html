@@ -54,6 +54,36 @@ const get_derived = async (lid) => {
     return lexeme.derived;
 };
 
+const get_alphaprev = async (lid) => {
+    const lexeme = await get_entity( lid );
+    if (!('alphaprev' in lexeme)) {
+        const focuslang_qid = lexeme.language;
+        const focus_lang = Object.keys( lexeme.lemmas )[0];
+        const focus_lemma = select_text( lexeme.lemmas );
+        const alphaprev_lids = await ask_sparql(`select ?lexeme {
+                ?lexeme a ontolex:LexicalEntry .
+                ?lexeme wikibase:lemma ?lemma .
+                ?lexeme dct:language wd:${focuslang_qid} .
+                filter(lang(?lemma) = "${focus_lang}")
+                filter(str(?lemma) < "${focus_lemma}")
+            } order by desc(?lemma) limit 10`);
+        lexeme.alphaprev = alphaprev_lids;
+    }
+    if (lexeme.alphaprev.length === 0) {
+        return null;
+    }
+    if (lexeme.alphaprev.length > 1) {
+        const previous_lexeme = await get_entity( lexeme.alphaprev[ 0 ] );
+        if (!('alphaprev' in previous_lexeme)) {
+            previous_lexeme.alphaprev = lexeme.alphaprev.slice( 1 );
+        }
+        if (!('alphanext' in previous_lexeme)) {
+            previous_lexeme.alphanext = [ lid ];
+        }
+    }
+    return lexeme.alphaprev[ 0 ];
+};
+
 const get_alphanext = async (lid) => {
     const lexeme = await get_entity( lid );
     if (!('alphanext' in lexeme)) {
@@ -76,6 +106,9 @@ const get_alphanext = async (lid) => {
         const next_lexeme = await get_entity( lexeme.alphanext[ 0 ] );
         if (!('alphanext' in next_lexeme)) {
             next_lexeme.alphanext = lexeme.alphanext.slice( 1 );
+        }
+        if (!('alphaprev' in next_lexeme)) {
+            next_lexeme.alphaprev = [ lid ];
         }
     }
     return lexeme.alphanext[ 0 ];
@@ -222,12 +255,15 @@ const set_focus = async () => {
     }
     hide((derived_lids.length === 0), 'derived');
 
-    // TODO: display alpabeticals
     alphanext_lid = await get_alphanext( focus_lid );
-    console.log( alphanext_lid );
+    // console.log( alphanext_lid );
     await display( 'alphanext', alphanext_lid );
     hide((alphanext_lid === null), 'alphanext');
 
+    alphaprev_lid = await get_alphaprev( focus_lid );
+    // console.log( alphaprev_lid );
+    await display( 'alphaprev', alphaprev_lid );
+    hide((alphaprev_lid === null), 'alphaprev');
 
     // TODO: display meaning rings
     // TODO: display meaning hierarchy
@@ -244,14 +280,14 @@ const run = async () => {
     });
 };
 
-// TODO: allow for navigation by keyboard (awsd, cursor, numbers)
+// TODO: allow for navigation by keyboard
 const presskey = () => {
     const key = event.keyCode;
     if ([81, 103, 55].includes(key)) {
         console.log('hierarchy up');
     }
     if ([38, 87, 104, 56].includes(key)) {
-        console.log('alpha prev');
+        move_to( alphaprev_lid );
     }
     if ([69, 105, 57].includes(key)) {
         move_to( derived_lids[0] );
@@ -294,15 +330,6 @@ run();
 // TODO: display something to display help
 // TODO: add about
         </script>
-        <!--
-select * {
-  ?lexeme a ontolex:LexicalEntry .
-  ?lexeme wikibase:lemma ?lemma .
-  ?lexeme dct:language wd:Q1860 .
-  filter(lang(?lemma) = 'en')
-  filter(str(?lemma) < "home")
-} order by desc(?lemma) limit 10
-        -->
         <style>
 body {
     font-family: Georgia, serif;
@@ -324,6 +351,8 @@ body {
     position: absolute;
     top: 5%;
     left: 30%;
+    height: 15%;
+    width: 40%;
 }
 #derived {
     position: absolute;
@@ -369,8 +398,13 @@ audio {
         <div id="hyper">
             hyper
         </div>
-        <div id="alphaprev">
-            alphaprev
+        <div id="alphaprev" onclick="move_to( alphaprev_lid );">
+            <b id="alphaprev_lemma"></b>
+            &mdash;
+            <span id="alphaprev_language"></span>
+            <span id="alphaprev_pos"></span>
+            <span id="alphaprev_sense_dash">&mdash;</span>
+            <i id="alphaprev_sense"></i>
         </div>
         <div id="derived"></div>
         <div id="meanprev">
