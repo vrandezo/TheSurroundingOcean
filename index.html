@@ -42,9 +42,20 @@ const ask_sparql = async (query) => {
     return lids;
 };
 
+// TODO: cache the derived, don't make the same SPARQL query repeatedly
 const get_derived = async (lid) => {
     const result = await ask_sparql('select ?lexeme { ?lexeme wdt:P5191 wd:' + lid + ' }');
     return result;
+};
+
+const select_text = ( arr ) => {
+    const languages = Object.keys( arr );
+    if ( languages.length === 0 ) { return ''; };
+    if ( languages.includes( language )) {
+        return arr[ language ].value;
+    } else {
+        return arr[ languages[0] ].value;
+    }
 };
 
 const put = (field, part, content) => {
@@ -63,12 +74,11 @@ const display = async (where, lid) => {
     const lexeme = await get_entity( lid );
     const lexeme_language_qid = lexeme.language;
     const lexeme_language = await get_entity( lexeme_language_qid );
-    const lemmas_languages = Object.keys( lexeme.lemmas );
-    const lemma = lexeme.lemmas[ lemmas_languages[0] ].value; // TODO turn into function
-    const language_label = lexeme_language.labels[ language ].value; // TODO turn into function
+    const lemma = select_text( lexeme.lemmas );
+    const language_label = select_text( lexeme_language.labels );
     const lexical_category_qid = lexeme.lexicalCategory;
     const lexical_category = await get_entity( lexical_category_qid );
-    const pos_label = lexical_category.labels[ language ].value; // TODO turn into function
+    const pos_label = select_text( lexical_category.labels );
     const senses = lexeme.senses;
     let senses_text = '';
     if (senses.length === 0) {
