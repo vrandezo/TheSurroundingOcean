@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Universe of Words</title>
+        <script>
+let language = 'en';
+let focus_lid = 'L4129'; // home
+let etymon_lids = [];
+let derived_lids = [];
+let alphaprev_lids = [];
+let alphanext_lids = [];
+let meaningprev_lids = [];
+let meaningnext_lids = [];
+let hyper_lids = [];
+let hypo_lids = [];
+
+const entity_cache = {};
+// TODO: caches of alphabetical order and caches of meaning rings
+
+// TODO: add get_entities that takes and returns a list
+const get_entity = async (id) => {
+    if (!(id in entity_cache)) {
+        const response = await fetch('https://www.wikidata.org/wiki/Special:EntityData/' + id + '.json');
+        const entities = await response.json();
+        const entity = entities.entities[id];
+        entity_cache[id] = entity;
+    }
+    return entity_cache[id];
+};
+
+const ask_sparql = async (query) => {
+    const queryendpoint = 'https://query.wikidata.org/sparql?format=json&query=';
+    const sparql = queryendpoint + (encodeURI(query).replace(/#/g, '%23'));
+    const response = await fetch(sparql);
+    const answer = await response.json();
+    const bindings = answer.results.bindings;
+    const lids = [];
+    for (const binding of bindings) {
+        lids.push(binding.lexeme.value.substr(31));
+    }
+    return lids;
+};
+
+const get_derived = async (lid) => {
+    const result = await ask_sparql('select ?lexeme { ?lexeme wdt:P5191 wd:' + lid + ' }');
+    return result;
+};
+
+const put = (field, part, content) => {
+    document.getElementById( field + '_' + part ).textContent = content;
+};
+
+const hide = (condition, element_id, display = 'block') => {
+    if (condition) {
+        document.getElementById(element_id).style.display = 'none';
+    } else {
+        document.getElementById(element_id).style.display = display;
+    }
+}
+
+const display = async (where, lid) => {
+    const lexeme = await get_entity( lid );
+    const lexeme_language_qid = lexeme.language;
+    const lexeme_language = await get_entity( lexeme_language_qid );
+    const lemmas_languages = Object.keys( lexeme.lemmas );
+    const lemma = lexeme.lemmas[ lemmas_languages[0] ].value; // TODO turn into function
+    const language_label = lexeme_language.labels[ language ].value; // TODO turn into function
+    const lexical_category_qid = lexeme.lexicalCategory;
+    const lexical_category = await get_entity( lexical_category_qid );
+    const pos_label = lexical_category.labels[ language ].value; // TODO turn into function
+    const senses = lexeme.senses;
+    let senses_text = '';
+    if (senses.length === 0) {
+        senses_text = '';
+    } else if (senses.length === 1) {
+        senses_text = senses[0].glosses[ language ].value; // TODO turn into function
+    } else {
+        let sensecount = 0;
+        for (let sense of senses) {
+            sensecount++;
+            const gloss = sense.glosses[ language ].value; // TODO turn into function
+            senses_text += '(' + sensecount.toString() + ') ' + gloss + ' ';
+            // TODO: add Wikipedia links to senses
+        }
+    }
+    put(where, 'lemma', lemma);
+    put(where, 'language', language_label);
+    put(where, 'pos', pos_label);
+    hide((senses_text === ''), where + '_sense_dash', 'inline');
+    put(where, 'sense', senses_text);
+};
+
+const move_to = async (lid) => {
+    const url = new URL(window.location);
+    url.searchParams.set('lid', lid);
+    window.history.pushState({ 'lid': lid }, '', url);
+    await set_focus();
+}
+
+const set_focus = async () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    if (urlParams.has('lid')) {
+        focus_lid = urlParams.get('lid');
+    } else {
+        focus_lid = 'L4129';
+    }
+    if (urlParams.has('lang')) {
+        language = urlParams.get('lang');
+    }
+
+    await display('center', focus_lid);
+
+    const lexeme = await get_entity( focus_lid );
+
+    // TODO deal better with more than one audio
+    let no_audio = true;
+    for (let form of lexeme.forms) {
+        // console.log(form);
+        if ('P443' in form.claims) {
+            const filename = form.claims.P443[0].mainsnak.datavalue.value;
+            // console.log(filename);
+            const response = await fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&titles=File%3A' + filename + '&formatversion=2&iiprop=url&origin=*');
+            const answer = await response.json();
+            const fileurl = answer.query.pages[0].imageinfo[0].url;
+            // TODO what if it is not an ogg file?
+            document.getElementById('center_audio').src = fileurl;
+            document.getElementById('center_audio_player').load();
+            no_audio = false;
+            break;
+        }
+    }
+    hide(no_audio, 'center_audio_player');
+
+    // TODO: display image
+
+    // TODO: deal with more than one
+    let no_etymon = true;
+    if ('P5191' in lexeme.claims) {
+        const etymons = lexeme.claims.P5191;
+        for (let etymon_snak of etymons) {
+            if (!no_etymon) {
+                console.log('error, more than one etymon!');
+            }
+            const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
+            etymon_lids = [ etymon_id ];
+            await display( 'etymon', etymon_id );
+            no_etymon = false;
+        }
+    }
+    hide(no_etymon, 'etymon');
+
+    // TODO: deal with more than one
+    derived_lids = await get_derived( focus_lid );
+    if (derived_lids.length > 0) {
+        await display( 'derived', derived_lids[0] );
+        if (derived_lids.length > 1) {
+            console.log('error, more than one derivative!');
+        }
+    }
+    hide((derived_lids.length === 0), 'derived');
+
+    // TODO: display alpabeticals
+    // TODO: display meaning rings
+    // TODO: display meaning hierarchy
+
+    document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + focus_lid;
+};
+
+// TODO: show placeholders and loading signs
+const run = async () => {
+    await set_focus();
+
+    addEventListener( 'popstate', (event) => {
+        set_focus();
+    });
+};
+
+// TODO: allow for navigation by keyboard (awsd, cursor, numbers)
+const presskey = () => {
+    const key = event.keyCode;
+    if ([81, 103, 55].includes(key)) {
+        console.log('hierarchy up');
+    }
+    if ([38, 87, 104, 56].includes(key)) {
+        console.log('alpha prev');
+    }
+    if ([69, 105, 57].includes(key)) {
+        move_to( derived_lids[0] );
+    }
+    if ([37, 65, 100, 52].includes(key)) {
+        console.log('meaning prev');
+    }
+    if ([39, 68, 102, 54].includes(key)) {
+        console.log('meaning next');
+    }
+    if ([90, 97, 49].includes(key)) {
+        // TODO: what if it is empty?
+        // TODO: what if it is not just one?
+        move_to( etymon_lids[0] );
+    }
+    if ([88, 83, 40, 98, 50].includes(key)) {
+        console.log('alpha next');
+    }
+    if ([67, 99, 51].includes(key)) {
+        console.log('hierarchy down');
+    }
+    if ([32, 191, 48, 96].includes(key)) {
+        console.log('help');
+    }
+    // console.log(key);
+};
+
+run();
+
+// TODO: deal with overflows
+// TODO: allow for navigation by click
+// TODO: allow for navigation by tap
+// TODO: animate navigation
+// TODO: gray out the edges?
+// TODO: add language selector
+// TODO: search for a lexeme?
+// TODO: display help on keypress
+// TODO: display something to display help
+// TODO: add about
+        </script>
+        <!--
+select * {
+  ?lexeme a ontolex:LexicalEntry .
+  ?lexeme wikibase:lemma ?lemma .
+  ?lexeme dct:language wd:Q1860 .
+  filter(lang(?lemma) = 'en')
+  filter(str(?lemma) < "home")
+} order by desc(?lemma) limit 9
+
+select * {
+  ?lexeme a ontolex:LexicalEntry .
+  ?lexeme wikibase:lemma ?lemma .
+  ?lexeme dct:language wd:Q1860 .
+  filter(lang(?lemma) = 'en')
+  filter(str(?lemma) > "home")
+} order by asc(?lemma) limit 9
+        -->
+        <style>
+body {
+    font-family: Georgia, serif;
+    font-size: x-large;
+}
+#center {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    height: 40%;
+    width: 40%;
+}
+#hyper {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+#alphaprev {
+    position: absolute;
+    top: 5%;
+    left: 30%;
+}
+#derived {
+    position: absolute;
+    top: 5%;
+    left: 80%;
+}
+#meanprev {
+    position: absolute;
+    top: 30%;
+    left: 5%;
+}
+#meannext {
+    position: absolute;
+    top: 30%;
+    left: 80%;
+}
+#etymon {
+    position: absolute;
+    top: 80%;
+    left: 5%;
+    height: 15%;
+    width: 15%;
+    display: none;
+}
+#alphanext {
+    position: absolute;
+    top: 80%;
+    left: 30%;
+}
+#hypo {
+    position: absolute;
+    top: 80%;
+    left: 80%;
+}
+audio {
+    display: none;
+}
+        </style>
+    </head>
+    <body onkeyup="presskey();">
+        <div id="hyper">
+            hyper
+        </div>
+        <div id="alphaprev">
+            alphaprev
+        </div>
+        <div id="derived" onclick="move_to(derived_lids[0]);">
+            <b id="derived_lemma"></b>
+            &mdash;
+            <span id="derived_language"></span>
+            <span id="derived_pos"></span>
+            <span id="derived_sense_dash">&mdash;</span>
+            <i id="derived_sense"></i>
+        </div>
+        <div id="meanprev">
+            meanprev
+        </div>
+        <div id="center">
+            <b id="center_lemma"></b>
+            &mdash;
+            <span id="center_language"></span>
+            <span id="center_pos"></span>
+            <span id="center_sense_dash">&mdash;</span>
+            <i id="center_sense"></i>
+            <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
+            <audio controls id="center_audio_player">
+                <source id="center_audio" src="" type="audio/ogg">
+            </audio>
+        </div>
+        <div id="meannext">
+            meannext
+        </div>
+        <div id="etymon" onclick="move_to(etymon_lids[0]);">
+            <b id="etymon_lemma"></b>
+            &mdash;
+            <span id="etymon_language"></span>
+            <span id="etymon_pos"></span>
+            <span id="etymon_sense_dash">&mdash;</span>
+            <i id="etymon_sense"></i>
+        </div>
+        <div id="alphanext">
+            alphanext
+        </div>
+        <div id="hypo">
+            hypo
+        </div>
+    </body>
+</html>
