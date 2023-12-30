@@ -180,10 +180,10 @@ const display_list = async (where, lids) => {
             <div id="${where}${i.toString()}" onclick="move_to('${lids[i-1]}');">
                 <b id="${where}${i.toString()}_lemma"></b>
                 &mdash;
-                <span id="${where}${i.toString()}_language"></span>
-                <span id="${where}${i.toString()}_pos"></span>
+                <i id="${where}${i.toString()}_language"></i>
+                <i id="${where}${i.toString()}_pos"></i>
                 <span id="${where}${i.toString()}_sense_dash">&mdash;</span>
-                <i id="${where}${i.toString()}_sense"></i>
+                <span id="${where}${i.toString()}_sense"></span>
             </div>`;
     }
 
@@ -325,6 +325,7 @@ const presskey = () => {
 };
 
 // TODO: add README, LICENSE, CODE OF CONDUCT etc.
+// TODO: add IPA, syllabilization? next to audio button?
 // TODO: navigate with keyboard through lists
 // TODO: figure out different lemmas with other language codes
 // TODO: deal with overflows
@@ -429,10 +430,10 @@ audio {
         <div id="alphaprev" onclick="move_to( alphaprev_lid );">
             <b id="alphaprev_lemma"></b>
             &mdash;
-            <span id="alphaprev_language"></span>
-            <span id="alphaprev_pos"></span>
+            <i id="alphaprev_language"></i>
+            <i id="alphaprev_pos"></i>
             <span id="alphaprev_sense_dash">&mdash;</span>
-            <i id="alphaprev_sense"></i>
+            <span id="alphaprev_sense"></span>
         </div>
         <div id="derived"></div>
         <div id="meanprev">
@@ -441,13 +442,13 @@ audio {
         <div id="center">
             <b id="center_lemma"></b>
             &mdash;
-            <span id="center_language"></span>
-            <span id="center_pos"></span>
+            <i id="center_language"></i>
+            <i id="center_pos"></i>
             <span id="center_sense_dash">&mdash;</span>
-            <i id="center_sense"></i>
-            <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
+            <span id="center_sense"></span>
             <audio id="player" src=""></audio>
             <button id="play_button" onclick="play();">▶</button>
+            <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
         <div id="meannext">
             meannext
@@ -456,10 +457,10 @@ audio {
         <div id="alphanext" onclick="move_to( alphanext_lid );">
             <b id="alphanext_lemma"></b>
             &mdash;
-            <span id="alphanext_language"></span>
-            <span id="alphanext_pos"></span>
+            <i id="alphanext_language"></i>
+            <i id="alphanext_pos"></i>
             <span id="alphanext_sense_dash">&mdash;</span>
-            <i id="alphanext_sense"></i>
+            <span id="alphanext_sense"></span>
         </div>
         <div id="hypo">
             hypo
