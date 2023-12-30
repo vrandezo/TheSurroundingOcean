@@ -11,7 +11,8 @@
 # Todos
 - replace (1) with (space)<b>1.</b> ? (compare standard dictionaries)
 - Highlight individual senses of more than one, up and down goes through them, clickable
-  - Only the highlighted sense is relevant for the meaning ring and hierarchy 
+  - Only the highlighted sense is relevant for the meaning ring and hierarchy
+  - when moving to other LID, ensure that sense_id is set to the right sense, i.e. S1?
 - display meaning hierarchy
   - re hierarchy, check out P279 and P6593 and their statements
   - cache meaninig hierarchy
@@ -44,4 +45,5 @@
 - add about
 - show placeholders and loading signs
 - deal better with more than one audio
+- audit all awaits if they are really necessary
 - add get_entities that takes and returns a list
