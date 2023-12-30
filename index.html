@@ -149,7 +149,11 @@ const get_meaning_ring = async ( lid ) => {
     return result;
 };
 
+const is_lsid = (lsid) => lsid.includes('-');
+
 const lid_from_lsid = (lsid) => lsid.split('-')[0];
+
+const sid_from_lsid = (lsid) => lsid.split('-')[1];
 
 const put = (field, part, content) => {
     document.getElementById( field + '_' + part ).textContent = content;
@@ -164,6 +168,9 @@ const hide = (condition, element_id, display = 'block') => {
 }
 
 const display = async (where, lid) => {
+    if (is_lsid(lid)) {
+        lid = lid_from_lsid(lid);
+    }
     const lexeme = await get_entity( lid );
     const lexeme_language_qid = lexeme.language;
     const lexeme_language = await get_entity( lexeme_language_qid );
@@ -289,11 +296,11 @@ const set_focus = async () => {
 
     meaning_ring = await get_meaning_ring( focus_lid );
     if (meaning_ring.length > 1) {
-        await display( 'meannext', lid_from_lsid( meaning_ring[1] ) )
+        await display( 'meannext', meaning_ring[1] );
     }
     hide((meaning_ring.length < 2), 'meannext');
     if (meaning_ring.length > 2) {
-        await display( 'meanprev',lid_from_lsid( meaning_ring[meaning_ring.length-1] ) )
+        await display( 'meanprev', meaning_ring[meaning_ring.length-1] );
     }
     hide((meaning_ring.length < 3), 'meanprev');
 };
