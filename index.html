@@ -107,25 +107,23 @@ const display = async (where, lid) => {
 };
 
 const display_list = async (where, lids) => {
-    const count = lids.length;
-    console.log( count );
-    console.log( lids );
+    // console.log( lids );
     let inner = '';
-    for (let i = 1; i <= count; i++) {
+    for (let i = 1; i <= lids.length; i++) {
         inner += `
-            <div id="derived${i.toString()}" onclick="move_to('${lids[i-1]}');">
-                <b id="derived${i.toString()}_lemma"></b>
+            <div id="${where}${i.toString()}" onclick="move_to('${lids[i-1]}');">
+                <b id="${where}${i.toString()}_lemma"></b>
                 &mdash;
-                <span id="derived${i.toString()}_language"></span>
-                <span id="derived${i.toString()}_pos"></span>
-                <span id="derived${i.toString()}_sense_dash">&mdash;</span>
-                <i id="derived${i.toString()}_sense"></i>
+                <span id="${where}${i.toString()}_language"></span>
+                <span id="${where}${i.toString()}_pos"></span>
+                <span id="${where}${i.toString()}_sense_dash">&mdash;</span>
+                <i id="${where}${i.toString()}_sense"></i>
             </div>`;
     }
 
     const root = document.getElementById( where );
     root.innerHTML = inner;
-    for (let i = 1; i <= count; i++) {
+    for (let i = 1; i <= lids.length; i++) {
         await display(where + i.toString(), lids[i-1]);
     }
 };
@@ -175,20 +173,16 @@ const set_focus = async () => {
     // TODO: display image
 
     // TODO: deal with more than one
-    let no_etymon = true;
+    etymon_lids = [];
     if ('P5191' in lexeme.claims) {
         const etymons = lexeme.claims.P5191;
         for (let etymon_snak of etymons) {
-            if (!no_etymon) {
-                console.log('error, more than one etymon!');
-            }
             const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
-            etymon_lids = [ etymon_id ];
-            await display( 'etymon', etymon_id );
-            no_etymon = false;
+            etymon_lids.push( etymon_id );
         }
+        await display_list( 'etymon', etymon_lids );
     }
-    hide(no_etymon, 'etymon');
+    hide((etymon_lids.length === 0), 'etymon');
 
     derived_lids = await get_derived( focus_lid );
     if (derived_lids.length > 0) {
@@ -364,14 +358,7 @@ audio {
         <div id="meannext">
             meannext
         </div>
-        <div id="etymon" onclick="move_to(etymon_lids[0]);">
-            <b id="etymon_lemma"></b>
-            &mdash;
-            <span id="etymon_language"></span>
-            <span id="etymon_pos"></span>
-            <span id="etymon_sense_dash">&mdash;</span>
-            <i id="etymon_sense"></i>
-        </div>
+        <div id="etymon"></div>
         <div id="alphanext">
             alphanext
         </div>
