@@ -6,6 +6,7 @@
         <script>
 let language = 'en';
 let focus_lid = 'L4129'; // home
+let sense_id = 'S1';
 let etymon_lids = [];
 let derived_lids = [];
 let alphaprev_lid = null;
@@ -161,9 +162,6 @@ const display = async (where, lid) => {
             sensecount++;
             const gloss = select_text( sense.glosses, true );
             senses_text += '(' + sensecount.toString() + ') ' + gloss + ' ';
-            // TODO: add Wikipedia links to senses
-            // TODO: use item for this sense for senses for alternative glosses in language
-            // TODO: replace (1) with (space)<b>1.</b> ? (compare standard dictionaries)
         }
     }
     put(where, 'lemma', lemma);
@@ -218,7 +216,6 @@ const set_focus = async () => {
 
     const lexeme = await get_entity( focus_lid );
 
-    // TODO deal better with more than one audio
     let no_audio = true;
     for (let form of lexeme.forms) {
         // console.log(form);
@@ -235,8 +232,6 @@ const set_focus = async () => {
     }
     hide(no_audio, 'player');
     hide(no_audio, 'play_button', 'inline');
-
-    // TODO: display image
 
     etymon_lids = [];
     if ('P5191' in lexeme.claims) {
@@ -268,16 +263,9 @@ const set_focus = async () => {
     if (alphanext_lid !== null) { await display( 'alphanext', alphanext_lid ); }
     hide((alphanext_lid === null), 'alphanext');
 
-    // TODO: display meaning rings
-    // follow P5972, P5973, and P5137 and their statements
-
-    // TODO: display meaning hierarchy
-    // re hierarchy, check out P279 and P6593 and their statements
-
     document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + focus_lid;
 };
 
-// TODO: show placeholders and loading signs
 const initialize = async () => {
     await set_focus();
 
@@ -291,7 +279,6 @@ const play = () => {
     document.getElementById('player').play();
 };
 
-// TODO: allow for navigation by keyboard
 const presskey = () => {
     const key = event.keyCode;
     if ([81, 103, 55].includes(key)) {
@@ -324,19 +311,6 @@ const presskey = () => {
     }
     // console.log(key);
 };
-
-// TODO: add README, LICENSE, CODE OF CONDUCT etc.
-// TODO: add IPA, syllabilization? next to audio button?
-// TODO: navigate with keyboard through lists
-// TODO: figure out different lemmas with other language codes
-// TODO: deal with overflows
-// TODO: animate navigation
-// TODO: gray out the edges?
-// TODO: add language selector
-// TODO: search for a lexeme?
-// TODO: display help on keypress
-// TODO: display something to display help
-// TODO: add about
         </script>
         <style>
 body {
