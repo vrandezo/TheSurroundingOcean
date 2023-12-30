@@ -162,7 +162,8 @@ const display = async (where, lid) => {
             const gloss = select_text( sense.glosses, true );
             senses_text += '(' + sensecount.toString() + ') ' + gloss + ' ';
             // TODO: add Wikipedia links to senses
-            // TODO: use item for this sense for senses!
+            // TODO: use item for this sense for senses for alternative glosses in language
+            // TODO: replace (1) with (space)<b>1.</b> ? (compare standard dictionaries)
         }
     }
     put(where, 'lemma', lemma);
