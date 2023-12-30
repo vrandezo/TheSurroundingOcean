@@ -16,7 +16,7 @@ let hyper_lids = [];
 let hypo_lids = [];
 
 const entity_cache = {};
-// TODO: caches of alphabetical order and caches of meaning rings
+// TODO: caches of meaning rings and hierarchies
 
 // TODO: add get_entities that takes and returns a list
 const get_entity = async (id) => {
@@ -227,7 +227,6 @@ const set_focus = async () => {
             const response = await fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&titles=File%3A' + filename + '&formatversion=2&iiprop=url&origin=*');
             const answer = await response.json();
             const fileurl = answer.query.pages[0].imageinfo[0].url;
-            // TODO what if it is not an ogg file?
             document.getElementById('player').src = fileurl;
             no_audio = false;
             break;
@@ -269,13 +268,16 @@ const set_focus = async () => {
     hide((alphanext_lid === null), 'alphanext');
 
     // TODO: display meaning rings
+    // follow P5972, P5973, and P5137 and their statements
+
     // TODO: display meaning hierarchy
+    // re hierarchy, check out P279 and P6593 and their statements
 
     document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + focus_lid;
 };
 
 // TODO: show placeholders and loading signs
-const run = async () => {
+const initialize = async () => {
     await set_focus();
 
     addEventListener( 'popstate', (event) => {
@@ -308,7 +310,6 @@ const presskey = () => {
     }
     if ([90, 97, 49].includes(key)) {
         // TODO: what if it is empty?
-        // TODO: what if it is not just one?
         move_to( etymon_lids[0] );
     }
     if ([88, 83, 40, 98, 50].includes(key)) {
@@ -323,13 +324,10 @@ const presskey = () => {
     // console.log(key);
 };
 
-run();
-
+// TODO: add README, LICENSE, CODE OF CONDUCT etc.
 // TODO: navigate with keyboard through lists
-// TODO: figure out different lemmas
+// TODO: figure out different lemmas with other language codes
 // TODO: deal with overflows
-// TODO: allow for navigation by click
-// TODO: allow for navigation by tap
 // TODO: animate navigation
 // TODO: gray out the edges?
 // TODO: add language selector
@@ -424,7 +422,7 @@ audio {
 }
         </style>
     </head>
-    <body onkeyup="presskey();">
+    <body onkeyup="presskey()" onload="initialize()">
         <div id="hyper">
             hyper
         </div>
