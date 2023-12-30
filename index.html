@@ -84,12 +84,12 @@ const display = async (where, lid) => {
     if (senses.length === 0) {
         senses_text = '';
     } else if (senses.length === 1) {
-        senses_text = senses[0].glosses[ language ].value; // TODO turn into function
+        senses_text = select_text( senses[0].glosses );
     } else {
         let sensecount = 0;
         for (let sense of senses) {
             sensecount++;
-            const gloss = sense.glosses[ language ].value; // TODO turn into function
+            const gloss = select_text( sense.glosses );
             senses_text += '(' + sensecount.toString() + ') ' + gloss + ' ';
             // TODO: add Wikipedia links to senses
         }
