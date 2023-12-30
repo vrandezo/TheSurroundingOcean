@@ -106,6 +106,30 @@ const display = async (where, lid) => {
     put(where, 'sense', senses_text);
 };
 
+const display_list = async (where, lids) => {
+    const count = lids.length;
+    console.log( count );
+    console.log( lids );
+    let inner = '';
+    for (let i = 1; i <= count; i++) {
+        inner += `
+            <div id="derived${i.toString()}" onclick="move_to('${lids[i-1]}');">
+                <b id="derived${i.toString()}_lemma"></b>
+                &mdash;
+                <span id="derived${i.toString()}_language"></span>
+                <span id="derived${i.toString()}_pos"></span>
+                <span id="derived${i.toString()}_sense_dash">&mdash;</span>
+                <i id="derived${i.toString()}_sense"></i>
+            </div>`;
+    }
+
+    const root = document.getElementById( where );
+    root.innerHTML = inner;
+    for (let i = 1; i <= count; i++) {
+        await display(where + i.toString(), lids[i-1]);
+    }
+};
+
 const move_to = async (lid) => {
     const url = new URL(window.location);
     url.searchParams.set('lid', lid);
@@ -166,13 +190,9 @@ const set_focus = async () => {
     }
     hide(no_etymon, 'etymon');
 
-    // TODO: deal with more than one
     derived_lids = await get_derived( focus_lid );
     if (derived_lids.length > 0) {
-        await display( 'derived', derived_lids[0] );
-        if (derived_lids.length > 1) {
-            console.log('error, more than one derivative!');
-        }
+        await display_list( 'derived', derived_lids );
     }
     hide((derived_lids.length === 0), 'derived');
 
@@ -229,6 +249,7 @@ const presskey = () => {
 
 run();
 
+// TODO: navigate with keyboard through lists
 // TODO: deal with overflows
 // TODO: allow for navigation by click
 // TODO: allow for navigation by tap
@@ -324,14 +345,7 @@ audio {
         <div id="alphaprev">
             alphaprev
         </div>
-        <div id="derived" onclick="move_to(derived_lids[0]);">
-            <b id="derived_lemma"></b>
-            &mdash;
-            <span id="derived_language"></span>
-            <span id="derived_pos"></span>
-            <span id="derived_sense_dash">&mdash;</span>
-            <i id="derived_sense"></i>
-        </div>
+        <div id="derived"></div>
         <div id="meanprev">
             meanprev
         </div>
