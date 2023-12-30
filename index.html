@@ -228,13 +228,13 @@ const set_focus = async () => {
             const answer = await response.json();
             const fileurl = answer.query.pages[0].imageinfo[0].url;
             // TODO what if it is not an ogg file?
-            document.getElementById('center_audio').src = fileurl;
-            document.getElementById('center_audio_player').load();
+            document.getElementById('player').src = fileurl;
             no_audio = false;
             break;
         }
     }
-    hide(no_audio, 'center_audio_player');
+    hide(no_audio, 'player');
+    hide(no_audio, 'play_button', 'inline');
 
     // TODO: display image
 
@@ -281,6 +281,11 @@ const run = async () => {
     addEventListener( 'popstate', (event) => {
         set_focus();
     });
+};
+
+const play = () => {
+    document.getElementById('player').load();
+    document.getElementById('player').play();
 };
 
 // TODO: allow for navigation by keyboard
@@ -397,6 +402,14 @@ body {
 audio {
     display: none;
 }
+#play_button {
+    display: none;
+    border-width: thin;
+    font-size: larger;
+    background-color: transparent;
+    border-radius: 0.2em;
+    border-style: dashed;
+}
         </style>
     </head>
     <body onkeyup="presskey();">
@@ -423,9 +436,8 @@ audio {
             <span id="center_sense_dash">&mdash;</span>
             <i id="center_sense"></i>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
-            <audio controls id="center_audio_player">
-                <source id="center_audio" src="" type="audio/ogg">
-            </audio>
+            <audio id="player" src=""></audio>
+            <button id="play_button" onclick="play();">▶</button>
         </div>
         <div id="meannext">
             meannext
