@@ -5,8 +5,7 @@
         <title>Universe of Words</title>
         <script>
 let language = 'en';
-let focus_lid = 'L4129'; // home
-let sense_id = 'S1';
+let focus_lid = 'L4129-S1'; // home
 let etymon_lids = [];
 let derived_lids = [];
 let alphaprev_lid = null;
@@ -18,6 +17,9 @@ let hypo_lids = [];
 const entity_cache = {};
 
 const get_entity = async (id) => {
+    if ( is_lsid(id) ) {
+        id = lid_from_lsid(id);
+    }
     if (!(id in entity_cache)) {
         console.log('wikidata', id);
         const response = await fetch('https://www.wikidata.org/wiki/Special:EntityData/' + id + '.json');
@@ -126,12 +128,14 @@ const select_text = ( arr, show_fallback = false ) => {
     }
 };
 
-const get_meaning_ring = async ( lid ) => {
-    const result = [ lid + '-' + sense_id ];
+const get_meaning_ring = async ( lsid ) => {
+    if ( !is_lsid(lsid) ) { lsid += '-S1'; }
+    const result = [ lsid ];
 
-    const lexeme = await get_entity( lid );
+    const lexeme = await get_entity( lsid );
     for ( const sense of lexeme.senses ) {
-        console.log( sense );
+        if ( sense.id !== lsid ) continue;
+        console.log(sense);
         if ('P5973' in sense.claims) {
             const synonyms = sense.claims.P5973;
             for (let synonym_snak of synonyms) {
@@ -145,7 +149,6 @@ const get_meaning_ring = async ( lid ) => {
     }
 
     console.log( result );
-
     return result;
 };
 
@@ -167,10 +170,15 @@ const hide = (condition, element_id, display = 'block') => {
     }
 }
 
-const display = async (where, lid) => {
-    if (is_lsid(lid)) {
-        lid = lid_from_lsid(lid);
+const display = async (where, lsid) => {
+    let lid = lsid;
+    let sid = 'S1';
+    if (is_lsid(lsid)) {
+        lid = lid_from_lsid(lsid);
+        sid = sid_from_lsid(lsid);
     }
+    lsid = lid + '-' + sid;
+
     const lexeme = await get_entity( lid );
     const lexeme_language_qid = lexeme.language;
     const lexeme_language = await get_entity( lexeme_language_qid );
@@ -179,25 +187,36 @@ const display = async (where, lid) => {
     const lexical_category_qid = lexeme.lexicalCategory;
     const lexical_category = await get_entity( lexical_category_qid );
     const pos_label = select_text( lexical_category.labels );
-    const senses = lexeme.senses;
-    let senses_text = '';
-    if (senses.length === 0) {
-        senses_text = '';
-    } else if (senses.length === 1) {
-        senses_text = select_text( senses[0].glosses, true );
-    } else {
-        let sensecount = 0;
-        for (let sense of senses) {
-            sensecount++;
-            const gloss = select_text( sense.glosses, true );
-            senses_text += '(' + sensecount.toString() + ') ' + gloss + ' ';
-        }
-    }
     put(where, 'lemma', lemma);
     put(where, 'language', language_label);
     put(where, 'pos', pos_label);
-    hide((senses_text === ''), where + '_sense_dash', 'inline');
-    put(where, 'sense', senses_text);
+
+    const senses = lexeme.senses;
+    hide((senses.length === 0), where + '_sense_dash', 'inline');
+    if (senses.length === 0) {
+        put(where, 'sense', '');
+    } else if (senses.length === 1) {
+        const sense_text = select_text( senses[0].glosses, true );
+        put(where, 'sense', sense_text );
+    } else {
+        put(where, 'sense', '');
+        let inner = '';
+        for (let i = 1; i <= senses.length; i++) {
+            inner += `
+                <span id="${where}-${lid}-S${i.toString()}"
+                    onclick="move_to('${lid}-S${i.toString()}')">
+                    ${i.toString()}.
+                    <span id="${where}-${lid}-S${i.toString()}-gloss"></span>
+                </span>&nbsp;&nbsp;`;
+        }
+        const root = document.getElementById (where + '_sense' );
+        root.innerHTML = inner;
+        for (let i = 1; i <= senses.length; i++) {
+            const gloss = select_text( senses[i-1].glosses, true );
+            document.getElementById( where + '-' + lid + '-S' + i.toString() + '-gloss').textContent = gloss;
+        }
+        document.getElementById( where + '-' + lsid).classList.add('highlight_sense');
+    }
 };
 
 const display_list = async (where, lids) => {
@@ -223,10 +242,7 @@ const display_list = async (where, lids) => {
 };
 
 const move_to = async (lid) => {
-    if (is_lsid(lid)) {
-        lid = lid_from_lsid(lid);
-    }
-    const url = new URL(window.location);
+    const url = new URL( window.location );
     url.searchParams.set('lid', lid);
     window.history.pushState({ 'lid': lid }, '', url);
     await set_focus();
@@ -238,7 +254,7 @@ const set_focus = async () => {
     if (urlParams.has('lid')) {
         focus_lid = urlParams.get('lid');
     } else {
-        focus_lid = 'L4129';
+        focus_lid = 'L4129-S1';
     }
     if (urlParams.has('lang')) {
         language = urlParams.get('lang');
@@ -440,6 +456,9 @@ audio {
     background-color: transparent;
     border-radius: 0.2em;
     border-style: dashed;
+}
+.highlight_sense {
+    text-decoration: underline;
 }
         </style>
     </head>
