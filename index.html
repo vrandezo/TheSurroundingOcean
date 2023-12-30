@@ -126,10 +126,30 @@ const select_text = ( arr, show_fallback = false ) => {
     }
 };
 
-const get_meaning_ring = ( lid ) => {
-    console.log( lid );
-    return [ lid ];
+const get_meaning_ring = async ( lid ) => {
+    const result = [ lid + '-' + sense_id ];
+
+    const lexeme = await get_entity( lid );
+    for ( const sense of lexeme.senses ) {
+        console.log( sense );
+        if ('P5973' in sense.claims) {
+            const synonyms = sense.claims.P5973;
+            for (let synonym_snak of synonyms) {
+                if (synonym_snak.mainsnak.snaktype !== 'value') {
+                    continue;
+                }
+                const synonym_id = synonym_snak.mainsnak.datavalue.value.id;
+                result.push( synonym_id );
+            }
+        }
+    }
+
+    console.log( result );
+
+    return result;
 };
+
+const lid_from_lsid = (lsid) => lsid.split('-')[0];
 
 const put = (field, part, content) => {
     document.getElementById( field + '_' + part ).textContent = content;
@@ -218,6 +238,8 @@ const set_focus = async () => {
 
     const lexeme = await get_entity( focus_lid );
 
+    document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + focus_lid;
+
     let no_audio = true;
     for (let form of lexeme.forms) {
         // console.log(form);
@@ -245,8 +267,8 @@ const set_focus = async () => {
             const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
             etymon_lids.push( etymon_id );
         }
-        await display_list( 'etymon', etymon_lids );
     }
+    await display_list( 'etymon', etymon_lids );
     hide((etymon_lids.length === 0), 'etymon');
 
     derived_lids = await get_derived( focus_lid );
@@ -265,13 +287,15 @@ const set_focus = async () => {
     if (alphanext_lid !== null) { await display( 'alphanext', alphanext_lid ); }
     hide((alphanext_lid === null), 'alphanext');
 
-    meaning_ring = get_meaning_ring( focus_lid );
-    if (meaning_ring.length > 1) { await display( 'meannext', meaning_ring[1] ) }
+    meaning_ring = await get_meaning_ring( focus_lid );
+    if (meaning_ring.length > 1) {
+        await display( 'meannext', lid_from_lsid( meaning_ring[1] ) )
+    }
     hide((meaning_ring.length < 2), 'meannext');
-    if (meaning_ring.length > 2) { await display( 'meanprev', meaning_ring[meaning_ring.length-1] ) }
+    if (meaning_ring.length > 2) {
+        await display( 'meanprev',lid_from_lsid( meaning_ring[meaning_ring.length-1] ) )
+    }
     hide((meaning_ring.length < 3), 'meanprev');
-
-    document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + focus_lid;
 };
 
 const initialize = async () => {
