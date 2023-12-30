@@ -17,9 +17,7 @@ let hyper_lids = [];
 let hypo_lids = [];
 
 const entity_cache = {};
-// TODO: caches of meaning rings and hierarchies
 
-// TODO: add get_entities that takes and returns a list
 const get_entity = async (id) => {
     if (!(id in entity_cache)) {
         console.log('wikidata', id);
@@ -297,7 +295,6 @@ const presskey = () => {
         console.log('meaning next');
     }
     if ([90, 97, 49].includes(key)) {
-        // TODO: what if it is empty?
         move_to( etymon_lids[0] );
     }
     if ([88, 83, 40, 98, 50].includes(key)) {
