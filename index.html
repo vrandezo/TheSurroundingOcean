@@ -72,13 +72,13 @@ const get_alphaprev = async (lid) => {
     if (lexeme.alphaprev.length === 0) {
         return null;
     }
+    const previous_lexeme = await get_entity( lexeme.alphaprev[ 0 ] );
+    if (!('alphanext' in previous_lexeme)) {
+        previous_lexeme.alphanext = [ lid ];
+    }
     if (lexeme.alphaprev.length > 1) {
-        const previous_lexeme = await get_entity( lexeme.alphaprev[ 0 ] );
         if (!('alphaprev' in previous_lexeme)) {
             previous_lexeme.alphaprev = lexeme.alphaprev.slice( 1 );
-        }
-        if (!('alphanext' in previous_lexeme)) {
-            previous_lexeme.alphanext = [ lid ];
         }
     }
     return lexeme.alphaprev[ 0 ];
@@ -102,13 +102,13 @@ const get_alphanext = async (lid) => {
     if (lexeme.alphanext.length === 0) {
         return null;
     }
+    const next_lexeme = await get_entity( lexeme.alphanext[ 0 ] );
+    if (!('alphaprev' in next_lexeme)) {
+        next_lexeme.alphaprev = [ lid ];
+    }
     if (lexeme.alphanext.length > 1) {
-        const next_lexeme = await get_entity( lexeme.alphanext[ 0 ] );
         if (!('alphanext' in next_lexeme)) {
             next_lexeme.alphanext = lexeme.alphanext.slice( 1 );
-        }
-        if (!('alphaprev' in next_lexeme)) {
-            next_lexeme.alphaprev = [ lid ];
         }
     }
     return lexeme.alphanext[ 0 ];
