@@ -42,10 +42,14 @@ const ask_sparql = async (query) => {
     return lids;
 };
 
-// TODO: cache the derived, don't make the same SPARQL query repeatedly
 const get_derived = async (lid) => {
-    const result = await ask_sparql('select ?lexeme { ?lexeme wdt:P5191 wd:' + lid + ' }');
-    return result;
+    const lexeme = await get_entity( lid );
+    console.log( lexeme );
+    if (!('derived' in lexeme)) {
+        const derived = await ask_sparql('select ?lexeme { ?lexeme wdt:P5191 wd:' + lid + ' }');
+        lexeme.derived = derived;
+    }
+    return lexeme.derived;
 };
 
 const select_text = ( arr, show_fallback = false ) => {
@@ -172,7 +176,6 @@ const set_focus = async () => {
 
     // TODO: display image
 
-    // TODO: deal with more than one
     etymon_lids = [];
     if ('P5191' in lexeme.claims) {
         const etymons = lexeme.claims.P5191;
