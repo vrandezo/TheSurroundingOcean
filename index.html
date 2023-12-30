@@ -8,8 +8,8 @@ let language = 'en';
 let focus_lid = 'L4129'; // home
 let etymon_lids = [];
 let derived_lids = [];
-let alphaprev_lids = [];
-let alphanext_lids = [];
+let alphaprev_lid = null;
+let alphanext_lid = null;
 let meaningprev_lids = [];
 let meaningnext_lids = [];
 let hyper_lids = [];
@@ -21,6 +21,7 @@ const entity_cache = {};
 // TODO: add get_entities that takes and returns a list
 const get_entity = async (id) => {
     if (!(id in entity_cache)) {
+        console.log('wikidata', id);
         const response = await fetch('https://www.wikidata.org/wiki/Special:EntityData/' + id + '.json');
         const entities = await response.json();
         const entity = entities.entities[id];
@@ -30,6 +31,7 @@ const get_entity = async (id) => {
 };
 
 const ask_sparql = async (query) => {
+    console.log('sparql', query);
     const queryendpoint = 'https://query.wikidata.org/sparql?format=json&query=';
     const sparql = queryendpoint + (encodeURI(query).replace(/#/g, '%23'));
     const response = await fetch(sparql);
@@ -44,12 +46,39 @@ const ask_sparql = async (query) => {
 
 const get_derived = async (lid) => {
     const lexeme = await get_entity( lid );
-    console.log( lexeme );
+    // console.log( lexeme );
     if (!('derived' in lexeme)) {
-        const derived = await ask_sparql('select ?lexeme { ?lexeme wdt:P5191 wd:' + lid + ' }');
+        const derived = await ask_sparql(`select ?lexeme { ?lexeme wdt:P5191 wd:${lid} }`);
         lexeme.derived = derived;
     }
     return lexeme.derived;
+};
+
+const get_alphanext = async (lid) => {
+    const lexeme = await get_entity( lid );
+    if (!('alphanext' in lexeme)) {
+        const focuslang_qid = lexeme.language;
+        const focus_lang = Object.keys( lexeme.lemmas )[0];
+        const focus_lemma = select_text( lexeme.lemmas );
+        const alphanext_lids = await ask_sparql(`select ?lexeme {
+                ?lexeme a ontolex:LexicalEntry .
+                ?lexeme wikibase:lemma ?lemma .
+                ?lexeme dct:language wd:${focuslang_qid} .
+                filter(lang(?lemma) = "${focus_lang}")
+                filter(str(?lemma) > "${focus_lemma}")
+            } order by asc(?lemma) limit 10`);
+        lexeme.alphanext = alphanext_lids;
+    }
+    if (lexeme.alphanext.length === 0) {
+        return null;
+    }
+    if (lexeme.alphanext.length > 1) {
+        const next_lexeme = await get_entity( lexeme.alphanext[ 0 ] );
+        if (!('alphanext' in next_lexeme)) {
+            next_lexeme.alphanext = lexeme.alphanext.slice( 1 );
+        }
+    }
+    return lexeme.alphanext[ 0 ];
 };
 
 const select_text = ( arr, show_fallback = false ) => {
@@ -194,6 +223,12 @@ const set_focus = async () => {
     hide((derived_lids.length === 0), 'derived');
 
     // TODO: display alpabeticals
+    alphanext_lid = await get_alphanext( focus_lid );
+    console.log( alphanext_lid );
+    await display( 'alphanext', alphanext_lid );
+    hide((alphanext_lid === null), 'alphanext');
+
+
     // TODO: display meaning rings
     // TODO: display meaning hierarchy
 
@@ -233,7 +268,7 @@ const presskey = () => {
         move_to( etymon_lids[0] );
     }
     if ([88, 83, 40, 98, 50].includes(key)) {
-        console.log('alpha next');
+        move_to( alphanext_lid );
     }
     if ([67, 99, 51].includes(key)) {
         console.log('hierarchy down');
@@ -247,6 +282,7 @@ const presskey = () => {
 run();
 
 // TODO: navigate with keyboard through lists
+// TODO: figure out different lemmas
 // TODO: deal with overflows
 // TODO: allow for navigation by click
 // TODO: allow for navigation by tap
@@ -265,15 +301,7 @@ select * {
   ?lexeme dct:language wd:Q1860 .
   filter(lang(?lemma) = 'en')
   filter(str(?lemma) < "home")
-} order by desc(?lemma) limit 9
-
-select * {
-  ?lexeme a ontolex:LexicalEntry .
-  ?lexeme wikibase:lemma ?lemma .
-  ?lexeme dct:language wd:Q1860 .
-  filter(lang(?lemma) = 'en')
-  filter(str(?lemma) > "home")
-} order by asc(?lemma) limit 9
+} order by desc(?lemma) limit 10
         -->
         <style>
 body {
@@ -324,6 +352,8 @@ body {
     position: absolute;
     top: 80%;
     left: 30%;
+    height: 15%;
+    width: 40%;
 }
 #hypo {
     position: absolute;
@@ -362,8 +392,13 @@ audio {
             meannext
         </div>
         <div id="etymon"></div>
-        <div id="alphanext">
-            alphanext
+        <div id="alphanext" onclick="move_to( alphanext_lid );">
+            <b id="alphanext_lemma"></b>
+            &mdash;
+            <span id="alphanext_language"></span>
+            <span id="alphanext_pos"></span>
+            <span id="alphanext_sense_dash">&mdash;</span>
+            <i id="alphanext_sense"></i>
         </div>
         <div id="hypo">
             hypo
