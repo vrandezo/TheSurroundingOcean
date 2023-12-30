@@ -255,15 +255,15 @@ const set_focus = async () => {
     }
     hide((derived_lids.length === 0), 'derived');
 
-    alphanext_lid = await get_alphanext( focus_lid );
-    // console.log( alphanext_lid );
-    await display( 'alphanext', alphanext_lid );
-    hide((alphanext_lid === null), 'alphanext');
-
     alphaprev_lid = await get_alphaprev( focus_lid );
     // console.log( alphaprev_lid );
     await display( 'alphaprev', alphaprev_lid );
     hide((alphaprev_lid === null), 'alphaprev');
+
+    alphanext_lid = await get_alphanext( focus_lid );
+    // console.log( alphanext_lid );
+    await display( 'alphanext', alphanext_lid );
+    hide((alphanext_lid === null), 'alphanext');
 
     // TODO: display meaning rings
     // TODO: display meaning hierarchy
