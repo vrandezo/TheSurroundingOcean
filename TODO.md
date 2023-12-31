@@ -1,9 +1,8 @@
 # Next
-- Meaning rings
-  - P6271 (demonym)
-  - ensure what was seen stable, but add on the way
-  - caches of meaning rings
-  - store the sense ID when moving away from a lexeme and coming back
+- display meaning hierarchy
+  - re hierarchy, check out P279 and P6593 and their statements
+  - cache meaninig hierarchy
+  - ensure what is seen is stable
 
 Nice to test:
 L5619-S1
@@ -12,11 +11,11 @@ L304013
 L643086
 
 # Todos
-- add P5238 to the etymons
-- display meaning hierarchy
-  - re hierarchy, check out P279 and P6593 and their statements
-  - cache meaninig hierarchy
-  - ensure what is seen is stable
+- Meaning rings
+  - P6271 (demonym)
+  - ensure what was seen stable, but add on the way
+  - caches of meaning rings
+  - store the sense ID when moving away from a lexeme and coming back
 - It seems that when the same lemma gets at the border we can skip homophones eg honey the noun
   - Solve by putting >= instead of >
   - increase the limit from 10 considerably for speed up

@@ -48,7 +48,8 @@ const get_derived = async (lid) => {
     const lexeme = await get_entity( lid );
     // console.log( lexeme );
     if (!('derived' in lexeme)) {
-        const derived = await ask_sparql(`select ?lexeme { ?lexeme wdt:P5191 wd:${lid} }`);
+        const derived = await ask_sparql(`select ?lexeme
+            { { ?lexeme wdt:P5191 wd:${lid} } UNION { ?lexeme wdt:P5238 wd:${lid} } }`);
         lexeme.derived = derived;
     }
     return lexeme.derived;
@@ -455,6 +456,16 @@ const set_focus = async () => {
     etymon_lids = [];
     if ('P5191' in lexeme.claims) {
         const etymons = lexeme.claims.P5191;
+        for (let etymon_snak of etymons) {
+            if (etymon_snak.mainsnak.snaktype !== 'value') {
+                continue;
+            }
+            const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
+            etymon_lids.push( etymon_id );
+        }
+    }
+    if ('P5238' in lexeme.claims) {
+        const etymons = lexeme.claims.P5238;
         for (let etymon_snak of etymons) {
             if (etymon_snak.mainsnak.snaktype !== 'value') {
                 continue;
