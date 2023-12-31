@@ -8,6 +8,12 @@
   - get item for this sense equalities and put them to the left of that
   - caches of meaning rings
 
+Bug: L471585-S2 (doesn't have a S1 so it gets confused)
+Nice to test:
+L587637-S1
+L304013
+L643086
+
 # Todos
 - replace (1) with (space)<b>1.</b> ? (compare standard dictionaries)
 - Highlight individual senses of more than one, up and down goes through them, clickable

@@ -173,11 +173,13 @@ const hide = (condition, element_id, display = 'block') => {
 const display = async (where, lsid) => {
     let lid = lsid;
     let sid = 'S1';
-    if (is_lsid(lsid)) {
+    let got_lsid = is_lsid( lsid );
+    if (got_lsid) {
         lid = lid_from_lsid(lsid);
         sid = sid_from_lsid(lsid);
     }
     lsid = lid + '-' + sid;
+    got_lsid |= (where === 'center');
 
     const lexeme = await get_entity( lid );
     const lexeme_language_qid = lexeme.language;
@@ -202,9 +204,12 @@ const display = async (where, lsid) => {
         put(where, 'sense', '');
         let inner = '';
         for (let i = 1; i <= senses.length; i++) {
+            let action = '';
+            if (where === 'center') {
+                action = `onclick="move_to('${lid}-S${i.toString()}')"`;
+            }
             inner += `
-                <span id="${where}-${lid}-S${i.toString()}"
-                    onclick="move_to('${lid}-S${i.toString()}')">
+                <span id="${where}-${lid}-S${i.toString()}" ${action}>
                     ${i.toString()}.
                     <span id="${where}-${lid}-S${i.toString()}-gloss"></span>
                 </span>&nbsp;&nbsp;`;
@@ -215,7 +220,9 @@ const display = async (where, lsid) => {
             const gloss = select_text( senses[i-1].glosses, true );
             document.getElementById( where + '-' + lid + '-S' + i.toString() + '-gloss').textContent = gloss;
         }
-        document.getElementById( where + '-' + lsid).classList.add('highlight_sense');
+        if (got_lsid) {
+            document.getElementById( where + '-' + lsid).classList.add('highlight_sense');
+        }
     }
 };
 
