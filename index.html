@@ -128,6 +128,15 @@ const select_text = ( arr, show_fallback = false ) => {
     }
 };
 
+const get_items_for_this_sense = async ( qid ) => {
+    const item = await get_entity( qid );
+    if (!('senses' in item )) {
+        const sense_ids = await ask_sparql(`select ?lexeme { ?lexeme wdt:P5137 wd:${qid} }`);
+        item.senses = sense_ids;
+    }
+    return item.senses;
+}
+
 const get_meaning_ring = async ( lsid ) => {
     const lexeme = await get_entity( lsid );
     if ( !is_lsid(lsid) ) {
@@ -137,30 +146,53 @@ const get_meaning_ring = async ( lsid ) => {
         }
         lsid = senses[0];
     }
-    const result = [ lsid ];
+    let result = [ lsid ];
 
-    for ( const sense of lexeme.senses ) {
-        if ( sense.id !== lsid ) continue;
+    let sense = null;
+    for ( const s of lexeme.senses ) {
+        if ( s.id !== lsid ) continue;
+        sense = s;
+    }
+    if (sense === null) {
+        return result;
+    }
 
-        if ( 'meaning_self' in sense ) {
-            return sense.meaning_ring;
-        }
-
-        // console.log(sense);
-        if ('P5973' in sense.claims) {
-            const synonyms = sense.claims.P5973;
-            for (let synonym_snak of synonyms) {
-                if (synonym_snak.mainsnak.snaktype !== 'value') {
-                    continue;
-                }
-                const synonym_id = synonym_snak.mainsnak.datavalue.value.id;
-                result.push( synonym_id );
+    // console.log(sense);
+    if ('P5973' in sense.claims) {
+        const synonyms = sense.claims.P5973;
+        for (let synonym_snak of synonyms) {
+            if (synonym_snak.mainsnak.snaktype !== 'value') {
+                continue;
             }
+            const synonym_id = synonym_snak.mainsnak.datavalue.value.id;
+            result.push( synonym_id );
+        }
+    }
+
+    if ('P5972' in sense.claims) {
+        const translations = sense.claims.P5972;
+        for (let translation_snak of translations) {
+            if (translation_snak.mainsnak.snaktype !== 'value') {
+                continue;
+            }
+            const translation_id = translation_snak.mainsnak.datavalue.value.id;
+            result.push( translation_id );
+        }
+    }
+
+    if ('P5137' in sense.claims) {
+        const items = sense.claims.P5137;
+        for (let item_snak of items) {
+            if (item_snak.mainsnak.snaktype !== 'value') {
+                continue;
+            }
+            const item_id = item_snak.mainsnak.datavalue.value.id;
+            result = result.concat( await get_items_for_this_sense ( item_id ) );
         }
     }
 
     // console.log( result );
-    result.sort();
+    result = [...new Set(result)].sort();
     return result;
 };
 
@@ -577,7 +609,6 @@ audio {
     </head>
     <body onkeyup="presskey()" onload="initialize()">
         <div id="hyper">
-            hyper
         </div>
         <div id="alphaprev" onclick="move_to( alphaprev_lid );">
             <b id="alphaprev_lemma"></b>
@@ -625,7 +656,6 @@ audio {
             <span id="alphanext_sense"></span>
         </div>
         <div id="hypo">
-            hypo
         </div>
     </body>
 </html>

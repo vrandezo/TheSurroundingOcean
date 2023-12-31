@@ -1,7 +1,4 @@
 # Next
-Go to L6183-S1
-switching > and < leads to unexpected ring behavior
-
 - Meaning rings
   - ensure what was seen stable, but add on the way
   - caches of meaning rings
