@@ -1,5 +1,6 @@
 # Next
 - Meaning rings
+  - P6271 (demonym), P9970 (predicate)
   - ensure what was seen stable, but add on the way
   - caches of meaning rings
   - store the sense ID when moving away from a lexeme and coming back

@@ -216,7 +216,7 @@ const hide = (condition, element_id, display = 'block') => {
 
 const display = async (where, lsid) => {
     let lid = lsid;
-    let sid = 'S1';
+    let sid = null;
     let got_lsid = is_lsid( lsid );
     if (got_lsid) {
         lid = lid_from_lsid(lsid);
@@ -224,9 +224,17 @@ const display = async (where, lsid) => {
     } else {
         lid = lsid;
         const senses = await get_senses(lid);
-        sid = sid_from_lsid( senses[0] );
+        if ( senses.length === 0 ) {
+            sid = null;
+        } else {
+            sid = sid_from_lsid( senses[0] );
+        }
     }
-    lsid = lid + '-' + sid;
+    if ( sid === null) {
+        lsid = lid;
+    } else {
+        lsid = lid + '-' + sid;
+    }
     got_lsid |= (where === 'center');
 
     const lexeme = await get_entity( lid );
