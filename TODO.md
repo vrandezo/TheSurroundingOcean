@@ -1,5 +1,6 @@
 # Next
 - Meaning rings
+  - use < and > to move right and left
   - follow P5972, P5973, and P5137 and their statements
   - get synonyms and put them to the right
   - get translations and put them to the left
@@ -7,6 +8,7 @@
   - ensure what was seen stable, but add on the way
   - get item for this sense equalities and put them to the left of that
   - caches of meaning rings
+  - store the sense ID when moving away from a lexeme and coming back
 
 Bug: L471585-S2 (doesn't have a S1 so it gets confused)
 Nice to test:

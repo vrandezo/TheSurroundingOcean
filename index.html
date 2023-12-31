@@ -248,6 +248,31 @@ const display_list = async (where, lids) => {
     }
 };
 
+const get_senses = async (lid) => {
+    const lexeme = await get_entity( lid );
+    const senses = [];
+    for (const sense of lexeme.senses) {
+        senses.push( sense.id );
+    }
+    return senses;
+};
+
+const next_sense = async () => {
+    const senses = await get_senses( focus_lid );
+    const current = senses.indexOf( focus_lid );
+    if ( current + 1 < senses.length ) {
+        move_to( senses[current + 1] );
+    }
+};
+
+const previous_sense = async () => {
+    const senses = await get_senses( focus_lid );
+    const current = senses.indexOf( focus_lid );
+    if ( current > 0 ) {
+        move_to( senses[current - 1] );
+    }
+};
+
 const move_to = async (lid) => {
     const url = new URL( window.location );
     url.searchParams.set('lid', lid);
@@ -331,17 +356,17 @@ const set_focus = async () => {
     hide((meaning_ring.length < 3), 'meanprev');
 };
 
+const play = () => {
+    document.getElementById('player').load();
+    document.getElementById('player').play();
+};
+
 const initialize = async () => {
     await set_focus();
 
     addEventListener( 'popstate', (event) => {
         set_focus();
     });
-};
-
-const play = () => {
-    document.getElementById('player').load();
-    document.getElementById('player').play();
 };
 
 const presskey = () => {
@@ -361,7 +386,7 @@ const presskey = () => {
     if ([39, 68, 102, 54].includes(key)) {
         move_to( meaning_ring[1] );
     }
-    if ([90, 97, 49].includes(key)) {
+    if ([90, 97, 49, 89].includes(key)) {
         move_to( etymon_lids[0] );
     }
     if ([88, 83, 40, 98, 50].includes(key)) {
@@ -369,6 +394,12 @@ const presskey = () => {
     }
     if ([67, 99, 51].includes(key)) {
         console.log('hierarchy down');
+    }
+    if ([188, 103].includes(key)) {
+        previous_sense();
+    }
+    if ([190, 106].includes(key)) {
+        next_sense();
     }
     if ([32, 191, 48, 96].includes(key)) {
         console.log('help');
