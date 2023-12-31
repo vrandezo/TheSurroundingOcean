@@ -149,7 +149,7 @@ const get_meaning_ring = async ( lsid ) => {
     }
 
     console.log( result );
-    return result;
+    return result.sort();
 };
 
 const is_lsid = (lsid) => lsid.includes('-');
@@ -276,6 +276,53 @@ const previous_sense = async () => {
     }
 };
 
+const next_meaning_index = async () => {
+    if (meaning_ring.length === 1) {
+        return null;
+    }
+    let current_lid = focus_lid;
+    if ( !is_lsid( current_lid ) ) {
+        const senses = await get_senses( focus_lid );
+        current_lid = senses[0];
+    }
+    const current_index = meaning_ring.indexOf( current_lid );
+    let new_index = current_index + 1;
+    if ( new_index === meaning_ring.length ) {
+        new_index = 0;
+    }
+    return new_index;
+};
+
+const next_meaning = async () => {
+    const to = await next_meaning_index();
+    if ( to === null ) return;
+    move_to( meaning_ring[ to ] );
+}
+
+const previous_meaning_index = async () => {
+    if (meaning_ring.length === 1) {
+        return null;
+    }
+    let current_lid = focus_lid;
+    if ( !is_lsid( current_lid ) ) {
+        const senses = await get_senses( focus_lid );
+        current_lid = senses[0];
+    }
+    const current_index = meaning_ring.indexOf( current_lid );
+    let new_index = current_index - 1;
+    if ( new_index < 0 ) {
+        new_index =  meaning_ring.length - 1;
+    }
+    return new_index;
+    move_to( meaning_ring[ new_index ] );
+};
+
+const previous_meaning = async () => {
+    const to = await previous_meaning_index();
+    if ( to === null ) return;
+    move_to( meaning_ring[ to ] );
+}
+
 const move_to = async (lid) => {
     const url = new URL( window.location );
     url.searchParams.set('lid', lid);
@@ -349,14 +396,16 @@ const set_focus = async () => {
     hide((alphanext_lid === null), 'alphanext');
 
     meaning_ring = await get_meaning_ring( focus_lid );
-    if (meaning_ring.length > 1) {
-        await display( 'meannext', meaning_ring[1] );
+    const nmi = await next_meaning_index();
+    if (nmi !== null) {
+        await display( 'meannext', meaning_ring[nmi] );
     }
-    hide((meaning_ring.length < 2), 'meannext');
+    hide((nmi === null), 'meannext');
+    const pmi = await previous_meaning_index();
     if (meaning_ring.length > 2) {
-        await display( 'meanprev', meaning_ring[meaning_ring.length-1] );
+        await display( 'meanprev', meaning_ring[pmi] );
     }
-    hide((meaning_ring.length < 3), 'meanprev');
+    hide((pmi === null), 'meanprev');
 };
 
 const play = () => {
@@ -384,10 +433,10 @@ const presskey = () => {
         move_to( derived_lids[0] );
     }
     if ([37, 65, 100, 52].includes(key)) {
-        move_to( meaning_ring[ meaning_ring.length-1 ] );
+        previous_meaning();
     }
     if ([39, 68, 102, 54].includes(key)) {
-        move_to( meaning_ring[1] );
+        next_meaning();
     }
     if ([90, 97, 49, 89].includes(key)) {
         move_to( etymon_lids[0] );
@@ -516,7 +565,7 @@ audio {
             <span id="alphaprev_sense"></span>
         </div>
         <div id="derived"></div>
-        <div id="meanprev" onclick="move_to( meaning_ring[ meaning_ring.length-1 ] );">
+        <div id="meanprev" onclick="previous_meaning">
             <b id="meanprev_lemma"></b>
             &mdash;
             <i id="meanprev_language"></i>
@@ -535,7 +584,7 @@ audio {
             <button id="play_button" onclick="play();">▶</button>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
-        <div id="meannext" onclick="move_to( meaning_ring[1] );">
+        <div id="meannext" onclick="next_meaning()">
             <b id="meannext_lemma"></b>
             &mdash;
             <i id="meannext_language"></i>
