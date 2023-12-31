@@ -1,4 +1,7 @@
 # Next
+Go to L6183-S1
+switching > and < leads to unexpected ring behavior
+
 - Meaning rings
   - ensure what was seen stable, but add on the way
   - caches of meaning rings
@@ -23,7 +26,7 @@ L643086
 - It seems that when the same lemma gets at the border we can skip homophones eg honey the noun
   - Solve by putting >= instead of >
   - increase the limit from 10 considerably for speed up
-- display image
+- display image or icon P2910
 - on keyboard navigation, when navigating to an empty field, what happens? (eg no etymon but press z)
 - add Wikipedia links to senses
 - use item for this sense for senses for alternative glosses in language

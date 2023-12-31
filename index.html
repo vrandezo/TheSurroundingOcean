@@ -74,7 +74,7 @@ const get_alphaprev = async (lid) => {
     }
     const previous_lexeme = await get_entity( lexeme.alphaprev[ 0 ] );
     if (!('alphanext' in previous_lexeme)) {
-        previous_lexeme.alphanext = [ lid ];
+        previous_lexeme.alphanext = [ lid_from_lsid(lid) ];
     }
     if (lexeme.alphaprev.length > 1) {
         if (!('alphaprev' in previous_lexeme)) {
@@ -104,7 +104,7 @@ const get_alphanext = async (lid) => {
     }
     const next_lexeme = await get_entity( lexeme.alphanext[ 0 ] );
     if (!('alphaprev' in next_lexeme)) {
-        next_lexeme.alphaprev = [ lid ];
+        next_lexeme.alphaprev = [ lid_from_lsid(lid) ];
     }
     if (lexeme.alphanext.length > 1) {
         if (!('alphanext' in next_lexeme)) {
@@ -218,20 +218,22 @@ const display = async (where, lsid) => {
         put(where, 'sense', '');
         let inner = '';
         for (let i = 1; i <= senses.length; i++) {
+            const sense_id = senses[i-1].id;
             let action = '';
             if (where === 'center') {
-                action = `onclick="move_to('${lid}-S${i.toString()}')"`;
+                action = `onclick="move_to('${sense_id}')"`;
             }
             inner += `
-                <span id="${where}-${lid}-S${i.toString()}" ${action}>
-                    ${i.toString()}.&nbsp;<span id="${where}-${lid}-S${i.toString()}-gloss"></span>
+                <span id="${where}-${sense_id}" ${action}>
+                    ${i.toString()}.&nbsp;<span id="${where}-${sense_id}-gloss"></span>
                 </span>&nbsp;&nbsp;`;
         }
         const root = document.getElementById (where + '_sense' );
         root.innerHTML = inner;
         for (let i = 1; i <= senses.length; i++) {
             const gloss = select_text( senses[i-1].glosses, true );
-            document.getElementById( where + '-' + lid + '-S' + i.toString() + '-gloss').textContent = gloss;
+            const sense_id = senses[i-1].id;
+            document.getElementById( where + '-' + sense_id + '-gloss').textContent = gloss;
         }
         if (got_lsid) {
             document.getElementById( where + '-' + lsid).classList.add('highlight_sense');
