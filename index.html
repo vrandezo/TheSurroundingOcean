@@ -221,6 +221,10 @@ const display = async (where, lsid) => {
     if (got_lsid) {
         lid = lid_from_lsid(lsid);
         sid = sid_from_lsid(lsid);
+    } else {
+        lid = lsid;
+        const senses = await get_senses(lid);
+        sid = sid_from_lsid( senses[0] );
     }
     lsid = lid + '-' + sid;
     got_lsid |= (where === 'center');
