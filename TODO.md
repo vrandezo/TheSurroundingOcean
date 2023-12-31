@@ -49,7 +49,8 @@ L643086
 - display help on keypress
 - display something to display help
 - add about
-- show placeholders and loading signs
+- show loading signs and throbbers when not ready
+ - prevent keyboard or click events when not ready
 - deal better with more than one audio
 - audit all awaits if they are really necessary
 - add get_entities that takes and returns a list

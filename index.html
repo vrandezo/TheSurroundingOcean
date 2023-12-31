@@ -130,14 +130,9 @@ const select_text = ( arr, show_fallback = false ) => {
 
 const get_meaning_ring = async ( lsid ) => {
     const lexeme = await get_entity( lsid );
-    if ('meaning_self' in lexeme) {
-        return lexeme.meaning_ring.slice(0);
-    }
     if ( !is_lsid(lsid) ) {
         const senses = await get_senses(lsid);
         if ( senses.length === 0 ) {
-            lexeme.meaning_ring = [ lsid ];
-            lexeme.meaning_self = true;
             return [ lsid ];
         }
         lsid = senses[0];
@@ -146,6 +141,11 @@ const get_meaning_ring = async ( lsid ) => {
 
     for ( const sense of lexeme.senses ) {
         if ( sense.id !== lsid ) continue;
+
+        if ( 'meaning_self' in sense ) {
+            return sense.meaning_ring;
+        }
+
         // console.log(sense);
         if ('P5973' in sense.claims) {
             const synonyms = sense.claims.P5973;
@@ -161,8 +161,6 @@ const get_meaning_ring = async ( lsid ) => {
 
     // console.log( result );
     result.sort();
-    lexeme.meaning_ring = result.slice(0);
-    lexeme.meaning_self = true;
     return result;
 };
 
