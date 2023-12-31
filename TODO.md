@@ -14,6 +14,7 @@ L304013
 L643086
 
 # Todos
+- add P5238 to the etymons
 - display meaning hierarchy
   - re hierarchy, check out P279 and P6593 and their statements
   - cache meaninig hierarchy
