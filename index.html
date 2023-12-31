@@ -137,6 +137,15 @@ const get_items_for_this_sense = async ( qid ) => {
     return item.senses;
 }
 
+const get_predicatees = async ( qid ) => {
+    const item = await get_entity( qid );
+    if (!('predicatees' in item )) {
+        const predicatee_ids = await ask_sparql(`select ?lexeme { ?lexeme wdt:P9970 wd:${qid} }`);
+        item.predicatees = predicatee_ids;
+    }
+    return item.predicatees;
+}
+
 const get_meaning_ring = async ( lsid ) => {
     const lexeme = await get_entity( lsid );
     if ( !is_lsid(lsid) ) {
@@ -188,6 +197,17 @@ const get_meaning_ring = async ( lsid ) => {
             }
             const item_id = item_snak.mainsnak.datavalue.value.id;
             result = result.concat( await get_items_for_this_sense ( item_id ) );
+        }
+    }
+
+    if ('P9970' in sense.claims) {
+        const items = sense.claims.P9970;
+        for (let item_snak of items) {
+            if (item_snak.mainsnak.snaktype !== 'value') {
+                continue;
+            }
+            const item_id = item_snak.mainsnak.datavalue.value.id;
+            result = result.concat( await get_predicatees( item_id ) );
         }
     }
 

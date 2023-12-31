@@ -1,6 +1,6 @@
 # Next
 - Meaning rings
-  - P6271 (demonym), P9970 (predicate)
+  - P6271 (demonym)
   - ensure what was seen stable, but add on the way
   - caches of meaning rings
   - store the sense ID when moving away from a lexeme and coming back
@@ -47,4 +47,5 @@ L643086
  - prevent keyboard or click events when not ready
 - deal better with more than one audio
 - audit all awaits if they are really necessary
+- get_entity seems not working well with redirects, try L6798, see L6799 for example
 - add get_entities that takes and returns a list
