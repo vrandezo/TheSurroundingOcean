@@ -9,6 +9,7 @@
   - store the sense ID when moving away from a lexeme and coming back
 
 Nice to test:
+L5619-S1
 L587637-S1
 L304013
 L643086

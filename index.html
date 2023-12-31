@@ -129,16 +129,21 @@ const select_text = ( arr, show_fallback = false ) => {
 };
 
 const get_meaning_ring = async ( lsid ) => {
+    const lexeme = await get_entity( lsid );
+    if ('meaning_self' in lexeme) {
+        return lexeme.meaning_ring.slice(0);
+    }
     if ( !is_lsid(lsid) ) {
         const senses = await get_senses(lsid);
         if ( senses.length === 0 ) {
+            lexeme.meaning_ring = [ lsid ];
+            lexeme.meaning_self = true;
             return [ lsid ];
         }
         lsid = senses[0];
     }
     const result = [ lsid ];
 
-    const lexeme = await get_entity( lsid );
     for ( const sense of lexeme.senses ) {
         if ( sense.id !== lsid ) continue;
         // console.log(sense);
@@ -155,7 +160,10 @@ const get_meaning_ring = async ( lsid ) => {
     }
 
     // console.log( result );
-    return result.sort();
+    result.sort();
+    lexeme.meaning_ring = result.slice(0);
+    lexeme.meaning_self = true;
+    return result;
 };
 
 const is_lsid = (lsid) => lsid.includes('-');
@@ -361,7 +369,7 @@ const set_focus = async () => {
 
     const lexeme = await get_entity( focus_lid );
 
-    document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + focus_lid;
+    document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + lid_from_lsid( focus_lid );
 
     let no_audio = true;
     for (let form of lexeme.forms) {
