@@ -135,7 +135,7 @@ const get_meaning_ring = async ( lsid ) => {
     const lexeme = await get_entity( lsid );
     for ( const sense of lexeme.senses ) {
         if ( sense.id !== lsid ) continue;
-        console.log(sense);
+        // console.log(sense);
         if ('P5973' in sense.claims) {
             const synonyms = sense.claims.P5973;
             for (let synonym_snak of synonyms) {
@@ -148,7 +148,7 @@ const get_meaning_ring = async ( lsid ) => {
         }
     }
 
-    console.log( result );
+    // console.log( result );
     return result.sort();
 };
 
@@ -286,6 +286,11 @@ const next_meaning_index = async () => {
         current_lid = senses[0];
     }
     const current_index = meaning_ring.indexOf( current_lid );
+    if (meaning_ring.length === 2) {
+        if (current_index === 1) {
+            return null;
+        }
+    }
     let new_index = current_index + 1;
     if ( new_index === meaning_ring.length ) {
         new_index = 0;
@@ -309,6 +314,11 @@ const previous_meaning_index = async () => {
         current_lid = senses[0];
     }
     const current_index = meaning_ring.indexOf( current_lid );
+    if (meaning_ring.length === 2) {
+        if (current_index === 0) {
+            return null;
+        }
+    }
     let new_index = current_index - 1;
     if ( new_index < 0 ) {
         new_index =  meaning_ring.length - 1;
@@ -402,7 +412,7 @@ const set_focus = async () => {
     }
     hide((nmi === null), 'meannext');
     const pmi = await previous_meaning_index();
-    if (meaning_ring.length > 2) {
+    if (pmi !== null) {
         await display( 'meanprev', meaning_ring[pmi] );
     }
     hide((pmi === null), 'meanprev');

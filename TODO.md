@@ -1,8 +1,6 @@
 # Next
 - Meaning rings
-  - make it a ring if more than 2
   - ensure what was seen stable, but add on the way
-  - when there are two in a meaning-ring, the other is always on the right
   - caches of meaning rings
   - follow P5972, P5973, and P5137 and their statements
   - get synonyms and put them to the right
@@ -16,10 +14,6 @@ L304013
 L643086
 
 # Todos
-- replace (1) with (space)<b>1.</b> ? (compare standard dictionaries)
-- Highlight individual senses of more than one, up and down goes through them, clickable
-  - Only the highlighted sense is relevant for the meaning ring and hierarchy
-  - when moving to other LID, ensure that sense_id is set to the right sense, i.e. S1?
 - display meaning hierarchy
   - re hierarchy, check out P279 and P6593 and their statements
   - cache meaninig hierarchy
