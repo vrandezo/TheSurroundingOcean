@@ -259,7 +259,10 @@ const get_senses = async (lid) => {
 
 const next_sense = async () => {
     const senses = await get_senses( focus_lid );
-    const current = senses.indexOf( focus_lid );
+    let current = 0;
+    if ( is_lsid(focus_lid) ) {
+        current = senses.indexOf( focus_lid );
+    }
     if ( current + 1 < senses.length ) {
         move_to( senses[current + 1] );
     }
