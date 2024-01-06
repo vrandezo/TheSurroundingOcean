@@ -8,8 +8,24 @@ L304013
 L643086
 
 # Todos
-- add Wikipedia links to senses
 - change the cursor when it can click, highlight the clickable area
+- add Wikipedia links to senses
+- deal with overflows
+ - when lists remove senses
+- show loading signs and throbbers when not ready
+ - prevent keyboard or click events when not ready
+- animate navigation
+- search for a lexeme?
+- add language selector
+  - ensure languages work
+  - Test right to left languages
+- display help on keypress
+- display something to display help
+- add about
+- add README, LICENSE, CODE OF CONDUCT etc.
+- navigate with keyboard through lists
+- add IPA, syllabilization? next to audio button?
+- figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - Show link to Wiktionary
 - L16666 shows self as hyper and hypo
 - start at L1191593 then go to etymon dog, and I can't go back anymore
@@ -30,26 +46,9 @@ L643086
 - Show antonym as a link at the end of the sense
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations
-- allow for navigation by keyboard
-- add README, LICENSE, CODE OF CONDUCT etc.
-- add IPA, syllabilization? next to audio button?
-- navigate with keyboard through lists
-- figure out different lemmas with other language codes
-- deal with overflows
-- animate navigation
-- gray out the edges?
-- add language selector
-  - ensure languages work
-  - Test right to left languages
-- search for a lexeme?
-- display help on keypress
-- display something to display help
-- add about
-- show loading signs and throbbers when not ready
- - prevent keyboard or click events when not ready
 - deal better with more than one audio
 - audit all awaits if they are really necessary
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
 - add get_entities that takes and returns a list
-- invalid lid
+- what happens when loaded with invalid lid
 - press navigation button to a field that doesn't exist (e.g. to etymon when there is none)
