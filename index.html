@@ -614,7 +614,7 @@ const initialize = async () => {
 const presskey = () => {
     const key = event.keyCode;
     if ([81, 103, 55].includes(key)) {
-        console.log('hierarchy up');
+        move_to( hyper_lids[0] );
     }
     if ([38, 87, 104, 56].includes(key)) {
         move_to( alphaprev_lid );
@@ -635,7 +635,7 @@ const presskey = () => {
         move_to( alphanext_lid );
     }
     if ([67, 99, 51].includes(key)) {
-        console.log('hierarchy down');
+        move_to( hypo_lids[0] );
     }
     if ([188, 103].includes(key)) {
         previous_sense();
@@ -646,7 +646,7 @@ const presskey = () => {
     if ([32, 191, 48, 96].includes(key)) {
         console.log('help');
     }
-    // console.log(key);
+    console.log(key);
 };
         </script>
         <style>

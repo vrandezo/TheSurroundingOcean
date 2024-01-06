@@ -1,8 +1,4 @@
 # Next
-- display meaning hierarchy
-  - re hierarchy, check out P279 and P6593 and their statements
-  - cache meaninig hierarchy
-  - ensure what is seen is stable
 
 Nice to test:
 L5619-S1
@@ -11,12 +7,17 @@ L304013
 L643086
 
 # Todos
+- change the cursor when it can click, highlight the clickable area
+- display meaning hierarchy
+  - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
+  - cache meaninig hierarchy
+  - ensure what is seen is stable
 - Meaning rings
   - P6271 (demonym)
   - ensure what was seen stable, but add on the way
   - caches of meaning rings
   - store the sense ID when moving away from a lexeme and coming back
-- It seems that when the same lemma gets at the border we can skip homophones eg honey the noun
+- It seems that when the same lemma gets at the border we might skip homophones eg honey the noun
   - Solve by putting >= instead of >
   - increase the limit from 10 considerably for speed up
 - display image or icon P2910
@@ -48,3 +49,5 @@ L643086
 - audit all awaits if they are really necessary
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
 - add get_entities that takes and returns a list
+- invalid lid
+- press navigation button to a field that doesn't exist (e.g. to etymon when there is none)
