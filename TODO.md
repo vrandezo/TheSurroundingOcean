@@ -1,4 +1,5 @@
 # Next
+- display image or icon P2910
 
 Nice to test:
 L5619-S1
@@ -7,8 +8,12 @@ L304013
 L643086
 
 # Todos
+- add Wikipedia links to senses
 - change the cursor when it can click, highlight the clickable area
-- display meaning hierarchy
+- Show link to Wiktionary
+- L16666 shows self as hyper and hypo
+- start at L1191593 then go to etymon dog, and I can't go back anymore
+- Meaning hierarchy
   - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
   - cache meaninig hierarchy
   - ensure what is seen is stable
@@ -20,13 +25,10 @@ L643086
 - It seems that when the same lemma gets at the border we might skip homophones eg honey the noun
   - Solve by putting >= instead of >
   - increase the limit from 10 considerably for speed up
-- display image or icon P2910
 - on keyboard navigation, when navigating to an empty field, what happens? (eg no etymon but press z)
-- add Wikipedia links to senses
 - use item for this sense for senses for alternative glosses in language
 - Show antonym as a link at the end of the sense
 - Show links to other dictionaries
-- Show link to Wiktionary
 - Use Wikifunctions for transliterations
 - allow for navigation by keyboard
 - add README, LICENSE, CODE OF CONDUCT etc.
