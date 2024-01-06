@@ -30,6 +30,20 @@ const get_entity = async (id) => {
     return entity_cache[id];
 };
 
+const get_sense = async (lsid) => {
+    if ( !is_lsid(lsid) ) {
+        return null;
+    }
+    const lid = lid_from_lsid(lsid);
+    const lexeme = await get_entity( lid );
+    let sense = null;
+    for (const s of lexeme.senses) {
+        if ( s.id !== lsid ) continue;
+        sense = s;
+    }
+    return sense;
+}
+
 const ask_sparql = async (query) => {
     console.log('sparql', query);
     const queryendpoint = 'https://query.wikidata.org/sparql?format=json&query=';
@@ -146,6 +160,17 @@ const get_predicatees = async ( qid ) => {
     }
     return item.predicatees;
 }
+
+const get_hypos_from_sense = async ( sid ) => {
+    const sense = await get_sense( sid );
+    if (!('hypos' in sense )) {
+        const hypo_ids = await ask_sparql(`select ?lexeme { ?lexeme wdt:P6593 wd:${sid} }`);
+        sense.hypos = hypo_ids;
+    }
+    return sense.hypos;
+}
+
+
 
 const get_meaning_ring = async ( lsid ) => {
     const lexeme = await get_entity( lsid );
@@ -451,6 +476,28 @@ const get_hypers = async (lsid) => {
     return result;
 }
 
+const get_hypos = async (lsid) => {
+    const lexeme = await get_entity( lsid );
+    if ( !is_lsid(lsid) ) {
+        const senses = await get_senses(lsid);
+        if ( senses.length === 0 ) {
+            return [ lsid ];
+        }
+        lsid = senses[0];
+    }
+    let sense = null;
+    for ( const s of lexeme.senses ) {
+        if ( s.id !== lsid ) continue;
+        sense = s;
+    }
+    if (sense === null) {
+        return result;
+    }
+
+    const result = get_hypos_from_sense( lsid );
+    return result;
+}
+
 const set_focus = async () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -544,6 +591,11 @@ const set_focus = async () => {
     }
     hide((hyper_lids.length === 0), 'hyper');
 
+    hypo_lids = await get_hypos( focus_lid );
+    if (hypo_lids.length > 0) {
+        await display_list( 'hypo', hypo_lids );
+    }
+    hide((hypo_lids.length === 0), 'hypo');
 };
 
 const play = () => {
