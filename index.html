@@ -448,7 +448,7 @@ const get_hypers = async (lsid) => {
     if ( !is_lsid(lsid) ) {
         const senses = await get_senses(lsid);
         if ( senses.length === 0 ) {
-            return [ lsid ];
+            return [];
         }
         lsid = senses[0];
     }
@@ -458,7 +458,7 @@ const get_hypers = async (lsid) => {
         sense = s;
     }
     if (sense === null) {
-        return result;
+        return [];
     }
 
     const result = [];
@@ -481,7 +481,7 @@ const get_hypos = async (lsid) => {
     if ( !is_lsid(lsid) ) {
         const senses = await get_senses(lsid);
         if ( senses.length === 0 ) {
-            return [ lsid ];
+            return [];
         }
         lsid = senses[0];
     }
@@ -491,7 +491,7 @@ const get_hypos = async (lsid) => {
         sense = s;
     }
     if (sense === null) {
-        return result;
+        return [];
     }
 
     const result = get_hypos_from_sense( lsid );

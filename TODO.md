@@ -1,5 +1,6 @@
 # Next
 - display image or icon P2910
+ - maybe make it cream and brown for an inactive sense?
 
 Nice to test:
 L5619-S1
@@ -27,7 +28,6 @@ L643086
 - add IPA, syllabilization? next to audio button?
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - Show link to Wiktionary
-- L16666 shows self as hyper and hypo
 - start at L1191593 then go to etymon dog, and I can't go back anymore
 - Meaning hierarchy
   - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
