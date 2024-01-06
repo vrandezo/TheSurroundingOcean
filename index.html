@@ -418,6 +418,39 @@ const move_to = async (lid) => {
     await set_focus();
 }
 
+const get_hypers = async (lsid) => {
+    const lexeme = await get_entity( lsid );
+    if ( !is_lsid(lsid) ) {
+        const senses = await get_senses(lsid);
+        if ( senses.length === 0 ) {
+            return [ lsid ];
+        }
+        lsid = senses[0];
+    }
+    let sense = null;
+    for ( const s of lexeme.senses ) {
+        if ( s.id !== lsid ) continue;
+        sense = s;
+    }
+    if (sense === null) {
+        return result;
+    }
+
+    const result = [];
+    // console.log(sense);
+    if ('P6593' in sense.claims) {
+        const hypers = sense.claims.P6593;
+        for (let hyper_snak of hypers) {
+            if (hyper_snak.mainsnak.snaktype !== 'value') {
+                continue;
+            }
+            const hyper_id = hyper_snak.mainsnak.datavalue.value.id;
+            result.push( hyper_id );
+        }
+    }
+    return result;
+}
+
 const set_focus = async () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -504,6 +537,13 @@ const set_focus = async () => {
         await display( 'meanprev', meaning_ring[pmi] );
     }
     hide((pmi === null), 'meanprev');
+
+    hyper_lids = await get_hypers( focus_lid );
+    if (hyper_lids.length > 0) {
+        await display_list( 'hyper', hyper_lids );
+    }
+    hide((hyper_lids.length === 0), 'hyper');
+
 };
 
 const play = () => {
@@ -584,52 +624,58 @@ body {
     position: absolute;
     top: 5%;
     left: 5%;
+    height: 19%;
+    width: 19%;
 }
 #alphaprev {
     position: absolute;
     top: 5%;
     left: 30%;
-    height: 15%;
+    height: 19%;
     width: 40%;
 }
 #derived {
     position: absolute;
     top: 5%;
     left: 80%;
+    height: 19%;
+    width: 19%;
 }
 #meanprev {
     position: absolute;
     top: 30%;
     left: 5%;
     height: 40%;
-    width: 15%;
+    width: 19%;
 }
 #meannext {
     position: absolute;
     top: 30%;
     left: 80%;
     height: 40%;
-    width: 15%;
+    width: 19%;
 }
 #etymon {
     position: absolute;
     top: 80%;
     left: 5%;
-    height: 15%;
-    width: 15%;
+    height: 19%;
+    width: 19%;
     display: none;
 }
 #alphanext {
     position: absolute;
     top: 80%;
     left: 30%;
-    height: 15%;
+    height: 19%;
     width: 40%;
 }
 #hypo {
     position: absolute;
     top: 80%;
     left: 80%;
+    height: 19%;
+    width: 19%;
 }
 audio {
     display: none;
