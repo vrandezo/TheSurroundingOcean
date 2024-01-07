@@ -1,7 +1,10 @@
 # Next
 - display image or icon P2910
  - maybe make it cream and brown for an inactive sense?
-
+ - some have P18 on Lexemes (~1,200)
+ - some have P18 on Sense (~17,000)
+ - some have P18 on item for this sense (~164,000)
+ - icon would add: 3 on Lexeme / 20 on Senses / 5,000 on items 
 Nice to test:
 L5619-S1
 L587637-S1
