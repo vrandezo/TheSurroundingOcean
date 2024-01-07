@@ -17,6 +17,8 @@
 - add about
 - add README, LICENSE, CODE OF CONDUCT etc.
 - navigate with keyboard through lists
+- underline on highlighted senses has an extra space at end
+- underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - start at L1191593 then go to etymon dog, and I can't go back anymore
