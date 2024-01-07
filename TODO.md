@@ -15,6 +15,7 @@
 - display something to display help
 - add about
 - add README, LICENSE, CODE OF CONDUCT etc.
+- use item for this sense for senses for alternative glosses in language
 - navigate with keyboard through lists
 - Meaning hierarchy
   - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
@@ -38,7 +39,6 @@
   - Solve by putting >= instead of >
   - increase the limit from 10 considerably for speed up
 - on keyboard navigation, when navigating to an empty field, what happens? (eg no etymon but press z)
-- use item for this sense for senses for alternative glosses in language
 - Show antonym as a link at the end of the sense
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations
