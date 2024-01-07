@@ -1,6 +1,5 @@
 # Next
-- deal with overflows
- - when lists remove senses
+- when lists remove senses
 
 # Todos
 - add Wikipedia links to senses
@@ -17,6 +16,10 @@
 - add about
 - add README, LICENSE, CODE OF CONDUCT etc.
 - navigate with keyboard through lists
+- Meaning hierarchy
+  - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
+  - cache meaninig hierarchy
+  - ensure what is seen is stable
 - underline on highlighted senses has an extra space at end
 - underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
@@ -26,10 +29,6 @@
  - deal with images that are too long?
  - add icon P2910 to image,  would add: 3 on Lexeme / 20 on Senses / 5,000 on items 
  - maybe make it cream and brown for an inactive sense?
-- Meaning hierarchy
-  - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
-  - cache meaninig hierarchy
-  - ensure what is seen is stable
 - Meaning rings
   - P6271 (demonym)
   - ensure what was seen stable, but add on the way
