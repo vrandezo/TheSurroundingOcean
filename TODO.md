@@ -1,21 +1,10 @@
 # Next
-- display image or icon P2910
- - maybe make it cream and brown for an inactive sense?
- - some have P18 on Lexemes (~1,200)
- - some have P18 on Sense (~17,000)
- - some have P18 on item for this sense (~164,000)
- - icon would add: 3 on Lexeme / 20 on Senses / 5,000 on items 
-Nice to test:
-L5619-S1
-L587637-S1
-L304013
-L643086
+- change the cursor when it can click, highlight the clickable area
 
 # Todos
-- change the cursor when it can click, highlight the clickable area
-- add Wikipedia links to senses
 - deal with overflows
  - when lists remove senses
+- add Wikipedia links to senses
 - show loading signs and throbbers when not ready
  - prevent keyboard or click events when not ready
 - animate navigation
@@ -32,6 +21,10 @@ L643086
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - Show link to Wiktionary
 - start at L1191593 then go to etymon dog, and I can't go back anymore
+- images
+ - deal with images that are too long?
+ - add icon P2910 to image,  would add: 3 on Lexeme / 20 on Senses / 5,000 on items 
+ - maybe make it cream and brown for an inactive sense?
 - Meaning hierarchy
   - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
   - cache meaninig hierarchy
