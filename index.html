@@ -59,6 +59,11 @@ const ask_sparql = async (query) => {
 };
 
 const get_image = async (lid) => {
+    lid = lid_from_lsid( lid );
+    const lexeme = await get_entity( lid );
+    if ('image' in lexeme) {
+        return lexeme.image;
+    }
     let result = await ask_sparql(`select ?lexeme { {
       wd:${lid} wdt:P18 ?lexeme .
     } union {
@@ -76,7 +81,8 @@ const get_image = async (lid) => {
     const response = await fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&titles=File%3A' + result + '&formatversion=2&iiprop=url&origin=*');
     const answer = await response.json();
     const fileurl = answer.query.pages[0].imageinfo[0].url;
-    return fileurl;
+    lexeme.image = fileurl;
+    return lexeme.image;
 }
 
 const get_derived = async (lid) => {
@@ -799,11 +805,11 @@ audio {
             <span id="meanprev_sense"></span>
         </div>
         <div id="center">
+            <img id="image" src="" />
             <b id="center_lemma"></b>
             &mdash;
             <i id="center_language"></i>
             <i id="center_pos"></i>
-            <img id="image" src="" />
             <span id="center_sense_dash">&mdash;</span>
             <span id="center_sense"></span>
             <audio id="player" src=""></audio>
