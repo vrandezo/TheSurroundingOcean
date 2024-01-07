@@ -334,7 +334,7 @@ const display = async (where, lsid) => {
             const sense_id = senses[i-1].id;
             let action = '';
             if (where === 'center') {
-                action = `onclick="move_to('${sense_id}')"`;
+                action = `onclick="move_to('${sense_id}')"  class="clickable"`;
             }
             inner += `
                 <span id="${where}-${sense_id}" ${action}>
@@ -359,7 +359,7 @@ const display_list = async (where, lids) => {
     let inner = '';
     for (let i = 1; i <= lids.length; i++) {
         inner += `
-            <div id="${where}${i.toString()}" onclick="move_to('${lids[i-1]}');">
+            <div id="${where}${i.toString()}" onclick="move_to('${lids[i-1]}');" class="clickable">
                 <b id="${where}${i.toString()}_lemma"></b>
                 &mdash;
                 <i id="${where}${i.toString()}_language"></i>
@@ -717,11 +717,6 @@ body {
     height: 19%;
     width: 40%;
 }
-#alphaprev:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
-}
 #derived {
     position: absolute;
     top: 5%;
@@ -736,22 +731,12 @@ body {
     height: 40%;
     width: 19%;
 }
-#meanprev:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
-}
 #meannext {
     position: absolute;
     top: 30%;
     left: 80%;
     height: 40%;
     width: 19%;
-}
-#meannext:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
 }
 #etymon {
     position: absolute;
@@ -767,11 +752,6 @@ body {
     left: 30%;
     height: 19%;
     width: 40%;
-}
-#alphanext:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
 }
 #hypo {
     position: absolute;
@@ -794,25 +774,32 @@ audio {
     border-radius: 0.2em;
     border-style: dashed;
 }
-#play_button:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
-}
 #image {
     width: 8em;
     float: right;
     display: none;
 }
+.clickable:hover {
+    color: black;
+    cursor: pointer;
+    background-color: white;
+}
 .highlight_sense {
     text-decoration: underline;
 }
+.highlight_sense:hover {
+    text-decoration: underline;
+    background-color: linen;
+    color: rgb(64, 0, 0);
+    cursor: text;
+}
+
         </style>
     </head>
     <body onkeyup="presskey()" onload="initialize()">
         <div id="hyper">
         </div>
-        <div id="alphaprev" onclick="move_to( alphaprev_lid );">
+        <div id="alphaprev" onclick="move_to( alphaprev_lid );" class="clickable">
             <b id="alphaprev_lemma"></b>
             &mdash;
             <i id="alphaprev_language"></i>
@@ -821,7 +808,7 @@ audio {
             <span id="alphaprev_sense"></span>
         </div>
         <div id="derived"></div>
-        <div id="meanprev" onclick="previous_meaning()">
+        <div id="meanprev" onclick="previous_meaning()" class="clickable">
             <b id="meanprev_lemma"></b>
             &mdash;
             <i id="meanprev_language"></i>
@@ -838,10 +825,10 @@ audio {
             <span id="center_sense_dash">&mdash;</span>
             <span id="center_sense"></span>
             <audio id="player" src=""></audio>
-            <button id="play_button" onclick="play();">▶</button>
+            <button id="play_button" onclick="play();" class="clickable">▶</button>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
-        <div id="meannext" onclick="next_meaning()">
+        <div id="meannext" onclick="next_meaning()" class="clickable">
             <b id="meannext_lemma"></b>
             &mdash;
             <i id="meannext_language"></i>
@@ -850,7 +837,7 @@ audio {
             <span id="meannext_sense"></span>
         </div>
         <div id="etymon"></div>
-        <div id="alphanext" onclick="move_to( alphanext_lid );">
+        <div id="alphanext" onclick="move_to( alphanext_lid );" class="clickable">
             <b id="alphanext_lemma"></b>
             &mdash;
             <i id="alphanext_language"></i>

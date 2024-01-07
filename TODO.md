@@ -1,10 +1,10 @@
 # Next
-- change the cursor when it can click, highlight the clickable area
-
-# Todos
 - deal with overflows
  - when lists remove senses
+
+# Todos
 - add Wikipedia links to senses
+- show link to Wiktionary
 - show loading signs and throbbers when not ready
  - prevent keyboard or click events when not ready
 - animate navigation
@@ -19,7 +19,6 @@
 - navigate with keyboard through lists
 - add IPA, syllabilization? next to audio button?
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
-- Show link to Wiktionary
 - start at L1191593 then go to etymon dog, and I can't go back anymore
 - images
  - deal with images that are too long?
