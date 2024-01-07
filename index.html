@@ -285,7 +285,7 @@ const hide = (condition, element_id, display = 'block') => {
     }
 }
 
-const display = async (where, lsid) => {
+const display = async (where, lsid, nosense = false) => {
     let lid = lsid;
     let sid = null;
     let got_lsid = is_lsid( lsid );
@@ -321,7 +321,10 @@ const display = async (where, lsid) => {
     put(where, 'pos', pos_label);
 
     const senses = lexeme.senses;
-    hide((senses.length === 0), where + '_sense_dash', 'inline');
+    hide((senses.length === 0) || nosense, where + '_sense_dash', 'inline');
+    if (nosense) {
+        return;
+    }
     if (senses.length === 0) {
         put(where, 'sense', '');
     } else if (senses.length === 1) {
@@ -371,8 +374,9 @@ const display_list = async (where, lids) => {
 
     const root = document.getElementById( where );
     root.innerHTML = inner;
+    const nosense = (lids.length > 1);
     for (let i = 1; i <= lids.length; i++) {
-        await display(where + i.toString(), lids[i-1]);
+        await display(where + i.toString(), lids[i-1], nosense);
     }
 };
 

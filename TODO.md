@@ -1,8 +1,7 @@
 # Next
-- when lists remove senses
+- add Wikipedia links to senses
 
 # Todos
-- add Wikipedia links to senses
 - show link to Wiktionary
 - show loading signs and throbbers when not ready
  - prevent keyboard or click events when not ready
