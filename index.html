@@ -85,6 +85,40 @@ const get_image = async (lid) => {
     return lexeme.image;
 }
 
+const get_wiktionary_from_word = async (word) => {
+    const request = "https://bs.wiktionary.org/w/api.php?action=parse&format=json&title=" +
+                    encodeURI(word) +
+                    "&text=&redirects=1&prop=langlinks&formatversion=2&origin=*";
+    const response = await(fetch(request));
+    const answer = await response.json();
+    for (const langlink of answer.parse.langlinks) {
+        if (langlink.lang === language) {
+            return langlink.url;
+        }
+    }
+    for (const langlink of answer.parse.langlinks) {
+        if (langlink.lang === 'en') {
+            return langlink.url;
+        }
+    }
+    for (const langlink of answer.parse.langlinks) {
+        return langlink.url;
+    }
+    return null;
+}
+
+const get_wiktionary_from_lid = async (lsid) => {
+    const lid = lid_from_lsid(lsid);
+    const lexeme = await get_entity(lid);
+    if ('wiktionary' in lexeme) {
+        return lexeme.wiktionary;
+    }
+    const lemma = select_text( lexeme.lemmas ).replace(/[\u200E]/g, '').replace(/[\u200F]/g, '');
+    const wiktionary = get_wiktionary_from_word( lemma );
+    lexeme.wiktionary = wiktionary;
+    return lexeme.wiktionary;
+}
+
 const get_derived = async (lid) => {
     const lexeme = await get_entity( lid );
     // console.log( lexeme );
@@ -600,6 +634,12 @@ const set_focus = async () => {
 
     document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + lid_from_lsid( focus_lid );
 
+    const wiktionary_link = await get_wiktionary_from_lid( focus_lid );
+    hide((wiktionary_link === null), 'wiktionary_link');
+    if (wiktionary_link !== null) {
+        document.getElementById('wiktionary_link').href = wiktionary_link;
+    }
+
     let no_audio = true;
     for (let form of lexeme.forms) {
         // console.log(form);
@@ -756,6 +796,11 @@ body {
     right: 0.2em;
     bottom: 0em;
 }
+#wiktionary_link {
+    position: absolute;
+    right: 2.2em;
+    bottom: 0em;
+}
 #hyper {
     position: absolute;
     top: 2%;
@@ -829,7 +874,7 @@ audio {
     background-color: linen;
     position: absolute;
     bottom: 0.2em;
-    right: 3em;
+    left: 0.2em;
     border-width: thin;
     font-size: large;
     border-radius: 0.2em;
@@ -893,9 +938,10 @@ audio {
             <i id="center_pos"></i>
             <span id="center_sense_dash">&mdash;</span>
             <span id="center_sense"></span>
-            <a id="center_sense_link" href="" target="_blank"><img src="wikipedia.png"></a>
+            <a id="center_sense_link" href="https://www.wikipedia.org" target="_blank"><img src="wikipedia.png" style="height:0.6em;"></a>
             <audio id="player" src=""></audio>
             <button id="play_button" onclick="play();" class="clickable">▶</button>
+            <a id="wiktionary_link" target="_blank" href="https://www.wiktionary.org"><img src="wiktionary.png" style="height:1em;"></a>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
         <div id="meannext" onclick="next_meaning()" class="clickable">

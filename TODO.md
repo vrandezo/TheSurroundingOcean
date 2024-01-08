@@ -1,24 +1,23 @@
 # Next
-- show link to Wiktionary
+- show loading signs and throbbers when not ready
 
 # Todos
-- show loading signs and throbbers when not ready
- - prevent keyboard or click events when not ready
 - animate navigation
-- search for a lexeme?
-- add language selector
-  - ensure languages work
-  - Test right to left languages
 - display help on keypress
 - display something to display help
 - add about
 - add README, LICENSE, CODE OF CONDUCT etc.
 - use item for this sense for senses for alternative glosses in language
+- search for a lexeme?
+- add language selector
+  - ensure languages work
+  - Test right to left languages
 - navigate with keyboard through lists
 - Meaning hierarchy
   - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
   - cache meaninig hierarchy
   - ensure what is seen is stable
+- prevent keyboard or click events when not ready
 - underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
