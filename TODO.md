@@ -1,8 +1,7 @@
 # Next
-- show loading signs and throbbers when not ready
+- animate navigation
 
 # Todos
-- animate navigation
 - display help on keypress
 - display something to display help
 - add about

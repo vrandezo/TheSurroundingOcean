@@ -442,7 +442,9 @@ const display = async (where, lsid, nosense = false) => {
 
 const display_list = async (where, lids) => {
     // console.log( lids );
-    let inner = '';
+    let inner = `<div id="${where}_cover">
+                    <div id="${where}_cover_throbber">⟳</div>
+                 </div>`;
     for (let i = 1; i <= lids.length; i++) {
         inner += `
             <div id="${where}${i.toString()}" onclick="move_to('${lids[i-1]}');" class="clickable">
@@ -610,6 +612,14 @@ const get_hypos = async (lsid) => {
     return result;
 }
 
+const cover = (element) => {
+    document.getElementById(element + '_cover').style.display = 'block';
+};
+
+const uncover = (element) => {
+    document.getElementById(element + '_cover').style.display = 'none';
+};
+
 const set_focus = async () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -621,6 +631,15 @@ const set_focus = async () => {
     if (urlParams.has('lang')) {
         language = urlParams.get('lang');
     }
+
+    cover("hyper");
+    cover("alphaprev");
+    cover("derived");
+    cover("meanprev");
+    cover("meannext");
+    cover("etymon");
+    cover("alphanext");
+    cover("hypo");
 
     await display('center', focus_lid);
 
@@ -680,22 +699,26 @@ const set_focus = async () => {
     }
     await display_list( 'etymon', etymon_lids );
     hide((etymon_lids.length === 0), 'etymon');
+    uncover("etymon");
 
     derived_lids = await get_derived( focus_lid );
     if (derived_lids.length > 0) {
         await display_list( 'derived', derived_lids );
     }
     hide((derived_lids.length === 0), 'derived');
+    uncover("derived");
 
     alphaprev_lid = await get_alphaprev( focus_lid );
     // console.log( alphaprev_lid );
     if (alphaprev_lid !== null) { await display( 'alphaprev', alphaprev_lid ); }
     hide((alphaprev_lid === null), 'alphaprev');
+    uncover("alphaprev");
 
     alphanext_lid = await get_alphanext( focus_lid );
     // console.log( alphanext_lid );
     if (alphanext_lid !== null) { await display( 'alphanext', alphanext_lid ); }
     hide((alphanext_lid === null), 'alphanext');
+    uncover("alphanext");
 
     meaning_ring = await get_meaning_ring( focus_lid );
     const nmi = await next_meaning_index();
@@ -703,23 +726,27 @@ const set_focus = async () => {
         await display( 'meannext', meaning_ring[nmi] );
     }
     hide((nmi === null), 'meannext');
+    uncover("meannext");
     const pmi = await previous_meaning_index();
     if (pmi !== null) {
         await display( 'meanprev', meaning_ring[pmi] );
     }
     hide((pmi === null), 'meanprev');
+    uncover("meanprev");
 
     hyper_lids = await get_hypers( focus_lid );
     if (hyper_lids.length > 0) {
         await display_list( 'hyper', hyper_lids );
     }
     hide((hyper_lids.length === 0), 'hyper');
+    uncover("hyper");
 
     hypo_lids = await get_hypos( focus_lid );
     if (hypo_lids.length > 0) {
         await display_list( 'hypo', hypo_lids );
     }
     hide((hypo_lids.length === 0), 'hypo');
+    uncover("hypo");
 };
 
 const play = () => {
@@ -809,6 +836,19 @@ body {
     width: 25%;
     overflow: auto;
 }
+#hyper_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#hyper_cover_throbber {
+    position: relative;
+    text-align: center;
+    top: 5%;
+    font-size: 500%;
+    color: black;
+}
 #alphaprev {
     position: absolute;
     top: 2%;
@@ -816,6 +856,19 @@ body {
     height: 25%;
     width: 40%;
     overflow: auto;
+}
+#alphaprev_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#alphaprev_cover_throbber {
+    position: relative;
+    text-align: center;
+    top: 5%;
+    font-size: 500%;
+    color: black;
 }
 #derived {
     position: absolute;
@@ -825,6 +878,19 @@ body {
     width: 23%;
     overflow: auto;
 }
+#derived_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#derived_cover_throbber {
+    position: relative;
+    text-align: center;
+    top: 5%;
+    font-size: 500%;
+    color: black;
+}
 #meanprev {
     position: absolute;
     top: 30%;
@@ -833,6 +899,19 @@ body {
     width: 25%;
     overflow: auto;
 }
+#meanprev_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#meanprev_cover_throbber {
+    position: relative;
+    text-align: center;
+    top: 20%;
+    font-size: 500%;
+    color: black;
+}
 #meannext {
     position: absolute;
     top: 30%;
@@ -840,6 +919,19 @@ body {
     height: 40%;
     width: 23%;
     overflow: auto;
+}
+#meannext_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#meannext_cover_throbber {
+    position: relative;
+    text-align: center;
+    top: 20%;
+    font-size: 500%;
+    color: black;
 }
 #etymon {
     position: absolute;
@@ -850,6 +942,18 @@ body {
     display: none;
     overflow: auto;
 }
+#etymon_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#etymon_cover_throbber {
+    position: relative;
+    text-align: center;
+    font-size: 500%;
+    color: black;
+}
 #alphanext {
     position: absolute;
     top: 80%;
@@ -858,6 +962,18 @@ body {
     width: 40%;
     overflow: auto;
 }
+#alphanext_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#alphanext_cover_throbber {
+    position: relative;
+    text-align: center;
+    font-size: 500%;
+    color: black;
+}
 #hypo {
     position: absolute;
     top: 80%;
@@ -865,6 +981,18 @@ body {
     height: 19%;
     width: 23%;
     overflow: auto;
+}
+#hypo_cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250, 240, 230, 0.8);
+}
+#hypo_cover_throbber {
+    position: relative;
+    text-align: center;
+    font-size: 500%;
+    color: black;
 }
 audio {
     display: none;
@@ -907,13 +1035,18 @@ audio {
     color: rgb(64, 0, 0);
     cursor: text;
 }
-
         </style>
     </head>
     <body onkeyup="presskey()" onload="initialize()">
         <div id="hyper">
+            <div id="hyper_cover">
+                <div id="hyper_cover_throbber">⟳</div>
+            </div>
         </div>
         <div id="alphaprev" onclick="move_to( alphaprev_lid );" class="clickable">
+            <div id="alphaprev_cover">
+                <div id="alphaprev_cover_throbber">⟳</div>
+            </div>
             <b id="alphaprev_lemma"></b>
             &mdash;
             <i id="alphaprev_language"></i>
@@ -921,8 +1054,15 @@ audio {
             <span id="alphaprev_sense_dash">&mdash;</span>
             <span id="alphaprev_sense"></span>
         </div>
-        <div id="derived"></div>
+        <div id="derived">
+            <div id="derived_cover">
+                <div id="derived_cover_throbber">⟳</div>
+            </div>
+        </div>
         <div id="meanprev" onclick="previous_meaning()" class="clickable">
+            <div id="meanprev_cover">
+                <div id="meanprev_cover_throbber">⟳</div>
+            </div>
             <b id="meanprev_lemma"></b>
             &mdash;
             <i id="meanprev_language"></i>
@@ -945,6 +1085,9 @@ audio {
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
         <div id="meannext" onclick="next_meaning()" class="clickable">
+            <div id="meannext_cover">
+                <div id="meannext_cover_throbber">⟳</div>
+            </div>
             <b id="meannext_lemma"></b>
             &mdash;
             <i id="meannext_language"></i>
@@ -952,8 +1095,15 @@ audio {
             <span id="meannext_sense_dash">&mdash;</span>
             <span id="meannext_sense"></span>
         </div>
-        <div id="etymon"></div>
+        <div id="etymon">
+            <div id="etymon_cover">
+                <div id="etymon_cover_throbber">⟳</div>
+            </div>
+        </div>
         <div id="alphanext" onclick="move_to( alphanext_lid );" class="clickable">
+            <div id="alphanext_cover">
+                <div id="alphanext_cover_throbber">⟳</div>
+            </div>
             <b id="alphanext_lemma"></b>
             &mdash;
             <i id="alphanext_language"></i>
@@ -962,6 +1112,9 @@ audio {
             <span id="alphanext_sense"></span>
         </div>
         <div id="hypo">
+            <div id="hypo_cover">
+                <div id="hypo_cover_throbber">⟳</div>
+            </div>
         </div>
     </body>
 </html>
