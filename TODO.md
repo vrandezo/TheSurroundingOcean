@@ -1,8 +1,7 @@
 # Next
-- add Wikipedia links to senses
+- show link to Wiktionary
 
 # Todos
-- show link to Wiktionary
 - show loading signs and throbbers when not ready
  - prevent keyboard or click events when not ready
 - animate navigation
@@ -20,7 +19,6 @@
   - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
   - cache meaninig hierarchy
   - ensure what is seen is stable
-- underline on highlighted senses has an extra space at end
 - underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)

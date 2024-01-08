@@ -267,6 +267,36 @@ const get_meaning_ring = async ( lsid ) => {
     return result;
 };
 
+const get_wikipedia_link = async ( lsid ) => {
+    const sense = await get_sense( lsid );
+
+    const item_ids = [];
+    if ('P5137' in sense.claims) {
+        const items = sense.claims.P5137;
+        for (let item_snak of items) {
+            if (item_snak.mainsnak.snaktype !== 'value') {
+                continue;
+            }
+            const item_id = item_snak.mainsnak.datavalue.value.id;
+            item_ids.push( item_id );
+        }
+    }
+    for ( const item_id of item_ids ) {
+        const item = await get_entity( item_id );
+        if (language + 'wiki' in item.sitelinks) {
+            return item.sitelinks[ language + 'wiki' ].url;
+        }
+        if ('enwiki' in item.sitelinks) {
+            return item.sitelinks.enwiki.url;
+        }
+        for (const lang in item.sitelinks) {
+            return item.sitelinks[ lang ].url;
+        }
+    }
+    return null;
+
+};
+
 const is_lsid = (lsid) => lsid.includes('-');
 
 const lid_from_lsid = (lsid) => lsid.split('-')[0];
@@ -327,9 +357,20 @@ const display = async (where, lsid, nosense = false) => {
     }
     if (senses.length === 0) {
         put(where, 'sense', '');
+        if (where === 'center') {
+            hide( true, 'center_sense_link');
+        }
     } else if (senses.length === 1) {
         const sense_text = select_text( senses[0].glosses, true );
         put(where, 'sense', sense_text );
+        if (where === 'center') {
+            const sense_id = senses[0].id;
+            const wikipedia_link = await get_wikipedia_link( sense_id );
+            hide( (wikipedia_link === null), 'center_sense_link', 'inline');
+            if (wikipedia_link !== null) {
+                document.getElementById( 'center_sense_link' ).href = wikipedia_link;
+            }
+        }
     } else {
         put(where, 'sense', '');
         let inner = '';
@@ -337,12 +378,20 @@ const display = async (where, lsid, nosense = false) => {
             const sense_id = senses[i-1].id;
             let action = '';
             if (where === 'center') {
-                action = `onclick="move_to('${sense_id}')"  class="clickable"`;
+                action = `onclick="move_to('${sense_id}')" class="clickable"`;
             }
             inner += `
                 <span id="${where}-${sense_id}" ${action}>
-                    ${i.toString()}.&nbsp;<span id="${where}-${sense_id}-gloss"></span>
-                </span>&nbsp;&nbsp;`;
+                    ${i.toString()}.&nbsp;<span id="${where}-${sense_id}-gloss"></span></span>&nbsp;`;
+            if (where === 'center') {
+                hide( true, 'center_sense_link');
+                const wikipedia_link = await get_wikipedia_link( sense_id );
+                if (wikipedia_link !== null) {
+                    inner += `<a href="${wikipedia_link}"  target="_blank">` +
+                             `<img src="wikipedia.png" class="wikilink" /></a>&nbsp;`
+                }
+            }
+            inner += `&nbsp;`;
         }
         const root = document.getElementById (where + '_sense' );
         root.innerHTML = inner;
@@ -777,14 +826,19 @@ audio {
 }
 #play_button {
     display: none;
+    background-color: linen;
     position: absolute;
     bottom: 0.2em;
     right: 3em;
     border-width: thin;
     font-size: large;
-    background-color: transparent;
     border-radius: 0.2em;
     border-style: dashed;
+}
+#play_button:hover {
+    color: black;
+    cursor: pointer;
+    background-color: white;
 }
 #image {
     width: 40%;
@@ -795,6 +849,9 @@ audio {
     color: black;
     cursor: pointer;
     background-color: white;
+}
+#center_sense_link {
+    display: none;
 }
 .highlight_sense {
     text-decoration: underline;
@@ -836,6 +893,7 @@ audio {
             <i id="center_pos"></i>
             <span id="center_sense_dash">&mdash;</span>
             <span id="center_sense"></span>
+            <a id="center_sense_link" href="" target="_blank"><img src="wikipedia.png"></a>
             <audio id="player" src=""></audio>
             <button id="play_button" onclick="play();" class="clickable">▶</button>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
