@@ -121,6 +121,7 @@ const get_wiktionary_from_lid = async (lsid) => {
 
 const get_derived = async (lid) => {
     const lexeme = await get_entity( lid );
+    lid = lid_from_lsid(lid);
     // console.log( lexeme );
     if (!('derived' in lexeme)) {
         const derived = await ask_sparql(`select ?lexeme

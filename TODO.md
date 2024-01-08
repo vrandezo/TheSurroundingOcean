@@ -1,6 +1,9 @@
 # Next
 - animate navigation
 
+# Bug
+- index.html?lid=L1083187-S3
+
 # Todos
 - display help on keypress
 - display something to display help
@@ -22,7 +25,6 @@
 - underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
-- start at L1191593 then go to etymon dog, and I can't go back anymore
 - images
  - deal with images that are too long?
  - add icon P2910 to image,  would add: 3 on Lexeme / 20 on Senses / 5,000 on items 
