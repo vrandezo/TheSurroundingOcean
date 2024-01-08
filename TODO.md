@@ -6,12 +6,14 @@
 - display something to display help
 - add about
 - add README, LICENSE, CODE OF CONDUCT etc.
+- audit all awaits if they are really necessary
 - use item for this sense for senses for alternative glosses in language
 - search for a lexeme?
 - add language selector
   - ensure languages work
   - Test right to left languages
 - navigate with keyboard through lists
+- etymon also P5425 (has Han characters)
 - Meaning hierarchy
   - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
   - cache meaninig hierarchy
@@ -38,7 +40,6 @@
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations
 - deal better with more than one audio
-- audit all awaits if they are really necessary
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
 - add get_entities that takes and returns a list
 - what happens when loaded with invalid lid
