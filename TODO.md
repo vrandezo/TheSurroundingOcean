@@ -1,5 +1,5 @@
 # Next
-- add README, LICENSE, CODE OF CONDUCT etc.
+- figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
@@ -7,18 +7,17 @@
 
 # Todos
 - use item for this sense for senses for alternative glosses in language
-- figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - add language selector
   - ensure languages work
   - Test right to left languages
 - internationalize help
 - navigate with keyboard through search results
+- navigate with keyboard through lists
 - speed up page
  - audit all awaits if they are really necessary
  - order animation and awaits better
  - add get_entities that takes and returns a list
  - use get_entities that gets more than one entity at once
-- navigate with keyboard through lists
 - etymon also P5425 (has Han characters)
 - prevent keyboard or click events when not ready
 - underlined senses loose highlight when out of center and being hovered
@@ -43,7 +42,8 @@
   - increase the limit from 10 considerably for speed up
 - on keyboard navigation, when navigating to an empty field, what happens? (eg no etymon but press z)
 - Show antonym as a link at the end of the sense
+ - maybe other special relations?
 - Show links to other dictionaries
-- Use Wikifunctions for transliterations
+- Use Wikifunctions for transliterations e.g. of Hangul or Harigana or Greek or Cyrillic
 - deal better with more than one audio
 - what happens when loaded with invalid lid
