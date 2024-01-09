@@ -40,5 +40,6 @@
  - maybe other special relations?
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations e.g. of Hangul or Harigana or Greek or Cyrillic
+- navigation animation from lists takes always the whole list instead of only the single entry
 - deal better with more than one audio
 - what happens when loaded with invalid lid
