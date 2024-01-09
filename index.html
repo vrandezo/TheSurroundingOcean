@@ -814,6 +814,40 @@ const display_help = () => {
     document.getElementById('helppage').style.display = 'block';
 }
 
+const in_search = () => (document.getElementById( 'search_screen').style.display === 'block');
+
+const start_search = () => {
+    document.getElementById( 'search_screen').style.display = 'block';
+    document.getElementById( 'search' ).focus();
+}
+
+const end_search = () => {
+    document.getElementById( 'search_screen').style.display = 'none';
+}
+
+const do_search = async () => {
+    const search_string = document.getElementById( 'search' ).value;
+    const query = `https://www.wikidata.org/w/api.php?action=wbsearchentities&` +
+                  `format=json&search=${search_string}&language=${language}&` +
+                  `type=lexeme&limit=10&props=&formatversion=2&origin=*`;
+    const response = await fetch(query);
+    const results = await response.json();
+    let inner = '';
+    for (const result of results.search) {
+        inner += `<div class="search_result" onclick="choose_result('${result.id}')">` + 
+            `<strong style="font-size: x-large;">${result.label}</strong> &nbsp;&nbsp;` +
+            `<em style="font-size: large;">${result.description}</em>`+
+          `</div>`;
+    }
+    document.getElementById( 'search_results' ).innerHTML = inner;
+    console.log(results.search);
+}
+
+const choose_result = async (lid) => {
+    end_search();
+    move_to(lid);
+}
+
 const presskey = () => {
     const key = event.keyCode;
     if ([32, 191, 48, 96].includes(key)) {
@@ -823,6 +857,15 @@ const presskey = () => {
 
 const pressedkey = () => {
     const key = event.keyCode;
+    if (in_search()) {
+        if ([13].includes(key)) {
+            do_search();
+        }
+        if ([27].includes(key)) {
+            end_search();
+        }
+        return;
+    }
     if ([81, 103, 55].includes(key)) {
         animate_to_center( 'hyper', hyper_lids[0] );
     }
@@ -855,6 +898,12 @@ const pressedkey = () => {
     }
     if ([32, 191, 48, 96].includes(key)) {
         hide_help();
+    }
+    if ([13].includes(key)) {
+        start_search();
+    }
+    if ([27].includes(key)) {
+        end_search();
     }
     // console.log(key);
 };
@@ -1133,6 +1182,52 @@ audio {
     font-style: italic;
     font-size: 200%;
 }
+#search_screen {
+    display: none;
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(250, 240, 230, 0.6);
+}
+#search {
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    width:60%;
+    font-size: x-large;
+    padding: 0.2em;
+    box-sizing: border-box;
+    border-radius: 0.2em;
+    border-width: 0.1em;
+    outline: none;
+}
+#search_results {
+    position: absolute;
+    color: black;
+    top: 20%;
+    left: 20%;
+    border-style: solid;
+    border-color: black;
+    border-radius: 0.2em;
+    border-width: 0.1em;
+    width: 60%;
+    background-color: lightgray;
+    height: 70%;
+    overflow: auto;
+}
+.search_result {
+    border: 0.05em;
+    padding: 0.4em;
+    border-style: solid;
+    background-color: white;
+}
+.search_result:hover {
+    background-color: azure;
+    cursor: pointer;
+}
+
         </style>
     </head>
     <body onkeydown="presskey()" onkeyup="pressedkey()" onload="initialize()">
@@ -1225,6 +1320,10 @@ audio {
             <line x1="50%" y1="10%" x2="50%" y2="90%" stroke="purple" stroke-linecap="round" stroke-width="1em" />
             <text x="45%" y="6%" class="helptext" id="alphabettext">alphabet</text>
         </svg>
+        <div id="search_screen">
+            <input id="search" type="text" />
+            <div id="search_results"></div>
+        </div>
         <button id="help_button"
                 onmouseenter="display_help()" onmouseleave="hide_help()"
                 ontouchstart="display_help()" ontouchend="hide_help()"

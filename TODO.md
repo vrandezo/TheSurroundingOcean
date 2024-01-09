@@ -1,13 +1,15 @@
 # Next
-- add about
-- add README, LICENSE, CODE OF CONDUCT etc.
+- add a search button next to the question mark
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- search for a lexeme?
+- add about
+- add README, LICENSE, CODE OF CONDUCT etc.
+- internationalize help
+- navigate with keyboard through search results
 - use item for this sense for senses for alternative glosses in language
 - add language selector
   - ensure languages work
