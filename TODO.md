@@ -2,7 +2,8 @@
 - animate navigation
 
 # Bug
-- index.html?lid=L1083187-S3
+- get_entity seems not working well with redirects, try L6798, see L6799 for example
+ - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
 - display help on keypress
@@ -42,7 +43,6 @@
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations
 - deal better with more than one audio
-- get_entity seems not working well with redirects, try L6798, see L6799 for example
 - add get_entities that takes and returns a list
 - what happens when loaded with invalid lid
 - press navigation button to a field that doesn't exist (e.g. to etymon when there is none)

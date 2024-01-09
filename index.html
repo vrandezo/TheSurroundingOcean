@@ -448,7 +448,8 @@ const display_list = async (where, lids) => {
                  </div>`;
     for (let i = 1; i <= lids.length; i++) {
         inner += `
-            <div id="${where}${i.toString()}" onclick="move_to('${lids[i-1]}');" class="clickable">
+            <div id="${where}${i.toString()}" class="clickable"
+                    onclick="animate_to_center('${where}', '${lids[i-1]}')">
                 <b id="${where}${i.toString()}_lemma"></b>
                 &mdash;
                 <i id="${where}${i.toString()}_language"></i>
@@ -519,7 +520,7 @@ const next_meaning_index = async () => {
 const next_meaning = async () => {
     const to = await next_meaning_index();
     if ( to === null ) return;
-    move_to( meaning_ring[ to ] );
+    await animate_to_center( 'meannext', meaning_ring[to] );
 }
 
 const previous_meaning_index = async () => {
@@ -548,7 +549,23 @@ const previous_meaning_index = async () => {
 const previous_meaning = async () => {
     const to = await previous_meaning_index();
     if ( to === null ) return;
-    move_to( meaning_ring[ to ] );
+    await animate_to_center( 'meanprev', meaning_ring[to] );
+}
+
+const previous_alpha = async () => {
+    await animate_to_center( 'alphaprev', alphaprev_lid );
+}
+
+const next_alpha = async () => {
+    await animate_to_center( 'alphanext', alphanext_lid );
+}
+
+const animate_to_center = async (element, lsid) => {
+    document.getElementById( element ).classList.add( 'animate' );
+    setTimeout(async () => {
+        document.getElementById( element ).classList.remove( 'animate' );
+        move_to( lsid );
+    }, 500);
 }
 
 const move_to = async (lid) => {
@@ -763,16 +780,31 @@ const initialize = async () => {
     });
 };
 
+const hide_help = () => {
+    document.getElementById('helppage').style.display = 'none';
+}
+
+const display_help = () => {
+    document.getElementById('helppage').style.display = 'block';
+}
+
 const presskey = () => {
     const key = event.keyCode;
+    if ([32, 191, 48, 96].includes(key)) {
+        display_help();
+    }
+}
+
+const pressedkey = () => {
+    const key = event.keyCode;
     if ([81, 103, 55].includes(key)) {
-        move_to( hyper_lids[0] );
+        animate_to_center( 'hyper', hyper_lids[0] );
     }
     if ([38, 87, 104, 56].includes(key)) {
-        move_to( alphaprev_lid );
+        animate_to_center( 'alphaprev', alphaprev_lid );
     }
     if ([69, 105, 57].includes(key)) {
-        move_to( derived_lids[0] );
+        animate_to_center( 'derived', derived_lids[0] );
     }
     if ([37, 65, 100, 52].includes(key)) {
         previous_meaning();
@@ -781,13 +813,13 @@ const presskey = () => {
         next_meaning();
     }
     if ([90, 97, 49, 89].includes(key)) {
-        move_to( etymon_lids[0] );
+        animate_to_center( 'etymon', etymon_lids[0] );
     }
     if ([88, 83, 40, 98, 50].includes(key)) {
-        move_to( alphanext_lid );
+        animate_to_center( 'alphanext', alphanext_lid );
     }
     if ([67, 99, 51].includes(key)) {
-        move_to( hypo_lids[0] );
+        animate_to_center( 'hypo', hypo_lids[0] );
     }
     if ([188, 109].includes(key)) {
         previous_sense();
@@ -796,7 +828,7 @@ const presskey = () => {
         next_sense();
     }
     if ([32, 191, 48, 96].includes(key)) {
-        console.log('help');
+        hide_help();
     }
     // console.log(key);
 };
@@ -975,6 +1007,16 @@ body {
     font-size: 500%;
     color: black;
 }
+.animate {
+    animation: move_to_center;
+    animation-duration: 400ms;
+}
+@keyframes move_to_center {
+    100% {
+        top: 30%;
+        left: 30%;
+    }
+}
 #hypo {
     position: absolute;
     top: 80%;
@@ -1014,6 +1056,21 @@ audio {
     cursor: pointer;
     background-color: white;
 }
+#help_button {
+    background-color: linen;
+    position: absolute;
+    bottom: 0.2em;
+    right: 0.2em;
+    border-width: thin;
+    font-size: xx-large;
+    border-radius: 0.2em;
+    border-style: dashed;
+}
+#help_button:hover {
+    color: black;
+    cursor: pointer;
+    background-color: white;
+}
 #image {
     width: 40%;
     float: right;
@@ -1036,15 +1093,29 @@ audio {
     color: rgb(64, 0, 0);
     cursor: text;
 }
+#helppage {
+    position: absolute;
+    background-color: rgba(250, 240, 230, 0.6);
+    left: 0%;
+    top: 0%;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+.helptext {
+    font-family: Impact, 'Arial Narrow Bold', sans-serif;
+    font-style: italic;
+    font-size: 200%;
+}
         </style>
     </head>
-    <body onkeyup="presskey()" onload="initialize()">
+    <body onkeydown="presskey()" onkeyup="pressedkey()" onload="initialize()">
         <div id="hyper">
             <div id="hyper_cover">
                 <div id="hyper_cover_throbber">⟳</div>
             </div>
         </div>
-        <div id="alphaprev" onclick="move_to( alphaprev_lid );" class="clickable">
+        <div id="alphaprev" onclick="animate_to_center('alphaprev', alphaprev_lid)" class="clickable">
             <div id="alphaprev_cover">
                 <div id="alphaprev_cover_throbber">⟳</div>
             </div>
@@ -1101,7 +1172,7 @@ audio {
                 <div id="etymon_cover_throbber">⟳</div>
             </div>
         </div>
-        <div id="alphanext" onclick="move_to( alphanext_lid );" class="clickable">
+        <div id="alphanext" onclick="animate_to_center('alphanext', alphanext_lid)" class="clickable">
             <div id="alphanext_cover">
                 <div id="alphanext_cover_throbber">⟳</div>
             </div>
@@ -1117,5 +1188,20 @@ audio {
                 <div id="hypo_cover_throbber">⟳</div>
             </div>
         </div>
+        <svg id="helppage" width="90%" height="90%">
+            <line x1="10%" y1="90%" x2="90%" y2="10%" stroke="red" stroke-width="1em" />
+            <text x="15%" y="92%" class="helptext" id="etymologytext">etymology</text>
+            <line x1="10%" y1="10%" x2="90%" y2="90%" stroke="blue" stroke-width="1em" />
+            <text x="15%" y="10%" class="helptext" id="hierarchytext">hierarchy</text>
+            <line x1="10%" y1="50%" x2="90%" y2="50%" stroke="green" stroke-width="1em" />
+            <text x="5%" y="47%" class="helptext" id="translationtext">translation</text>
+            <text x="5%" y="57%" class="helptext" id="synonymtext">synonym</text>
+            <line x1="50%" y1="10%" x2="50%" y2="90%" stroke="purple" stroke-width="1em" />
+            <text x="45%" y="8%" class="helptext" id="alphabettext">alphabet</text>
+        </svg>
+        <button id="help_button"
+                onmouseenter="display_help()" onmouseleave="hide_help()"
+                onmousedown="display_help()" onmouseup="hide_help()"
+            >?</button>
     </body>
 </html>
