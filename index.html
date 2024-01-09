@@ -925,6 +925,7 @@ body {
     border-style: double;
     padding: 0.5em;
     overflow: auto;
+    box-sizing: border-box;
 }
 #center_link {
     position: absolute;
@@ -981,9 +982,9 @@ body {
 #derived {
     position: absolute;
     top: 2%;
-    left: 77%;
+    left: 74%;
     height: 25%;
-    width: 22%;
+    width: 25%;
     overflow: auto;
 }
 #derived_cover {
@@ -1023,9 +1024,9 @@ body {
 #meannext {
     position: absolute;
     top: 30%;
-    left: 77%;
+    left: 74%;
     height: 40%;
-    width: 22%;
+    width: 25%;
     overflow: auto;
 }
 #meannext_cover {
@@ -1043,9 +1044,9 @@ body {
 }
 #etymon {
     position: absolute;
-    top: 80%;
+    top: 74%;
     left: 2%;
-    height: 19%;
+    height: 25%;
     width: 25%;
     display: none;
     overflow: auto;
@@ -1064,9 +1065,9 @@ body {
 }
 #alphanext {
     position: absolute;
-    top: 80%;
+    top: 74%;
     left: 30%;
-    height: 19%;
+    height: 25%;
     width: 40%;
     overflow: auto;
 }
@@ -1082,22 +1083,12 @@ body {
     font-size: 500%;
     color: black;
 }
-.animate {
-    animation: move_to_center;
-    animation-duration: 400ms;
-}
-@keyframes move_to_center {
-    100% {
-        top: 30%;
-        left: 30%;
-    }
-}
 #hypo {
     position: absolute;
-    top: 80%;
-    left: 77%;
-    height: 19%;
-    width: 22%;
+    top: 74%;
+    left: 74%;
+    height: 25%;
+    width: 25%;
     overflow: auto;
 }
 #hypo_cover {
@@ -1111,6 +1102,16 @@ body {
     text-align: center;
     font-size: 500%;
     color: black;
+}
+.animate {
+    animation: move_to_center;
+    animation-duration: 400ms;
+}
+@keyframes move_to_center {
+    100% {
+        top: 30%;
+        left: 30%;
+    }
 }
 audio {
     display: none;
