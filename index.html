@@ -503,7 +503,7 @@ const display = async (where, lsid, nosense = false) => {
 const display_list = async (where, lids) => {
     // console.log( lids );
     let inner = `<div id="${where}_cover">
-                    <div id="${where}_cover_throbber">⟳</div>
+                    <div id="${where}_cover_throbber">⏳</div>
                  </div>`;
     for (let i = 1; i <= lids.length; i++) {
         inner += `
@@ -1050,7 +1050,7 @@ body {
     position: relative;
     text-align: center;
     top: 5%;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 #alphaprev {
@@ -1071,7 +1071,7 @@ body {
     position: relative;
     text-align: center;
     top: 5%;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 #derived {
@@ -1092,7 +1092,7 @@ body {
     position: relative;
     text-align: center;
     top: 5%;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 #meanprev {
@@ -1113,7 +1113,7 @@ body {
     position: relative;
     text-align: center;
     top: 20%;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 #meannext {
@@ -1134,7 +1134,7 @@ body {
     position: relative;
     text-align: center;
     top: 20%;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 #etymon {
@@ -1155,7 +1155,7 @@ body {
 #etymon_cover_throbber {
     position: relative;
     text-align: center;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 #alphanext {
@@ -1175,7 +1175,7 @@ body {
 #alphanext_cover_throbber {
     position: relative;
     text-align: center;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 #hypo {
@@ -1195,7 +1195,7 @@ body {
 #hypo_cover_throbber {
     position: relative;
     text-align: center;
-    font-size: 500%;
+    font-size: 200%;
     color: black;
 }
 .animate {
@@ -1216,9 +1216,12 @@ audio {
     background-color: linen;
     position: absolute;
     bottom: 0.2em;
+    height: 1.5em;
+    width: 1.5em;
+    text-align: center;
     left: 0.2em;
     border-width: thin;
-    font-size: large;
+    font-size: xx-large;
     border-radius: 0.2em;
     border-style: dashed;
 }
@@ -1403,16 +1406,19 @@ audio {
 }
 
         </style>
+        <link rel="icon" href="favicon32.png" sizes="32x32">
+        <link rel="apple-touch-icon" href="favicon180.png">
+        <link rel="manifest" href="manifest.webmanifest.json">
     </head>
     <body onkeydown="presskey()" onkeyup="pressedkey()" onload="initialize()">
         <div id="hyper">
             <div id="hyper_cover">
-                <div id="hyper_cover_throbber">⟳</div>
+                <div id="hyper_cover_throbber">⏳</div>
             </div>
         </div>
         <div id="alphaprev" onclick="animate_to_center('alphaprev', alphaprev_lid)" class="clickable">
             <div id="alphaprev_cover">
-                <div id="alphaprev_cover_throbber">⟳</div>
+                <div id="alphaprev_cover_throbber">⏳</div>
             </div>
             <b id="alphaprev_lemma"></b>
             &mdash;
@@ -1423,12 +1429,12 @@ audio {
         </div>
         <div id="derived">
             <div id="derived_cover">
-                <div id="derived_cover_throbber">⟳</div>
+                <div id="derived_cover_throbber">⏳</div>
             </div>
         </div>
         <div id="meanprev" onclick="previous_meaning()" class="clickable">
             <div id="meanprev_cover">
-                <div id="meanprev_cover_throbber">⟳</div>
+                <div id="meanprev_cover_throbber">⏳</div>
             </div>
             <b id="meanprev_lemma"></b>
             &mdash;
@@ -1447,13 +1453,13 @@ audio {
             <span id="center_sense"></span>
             <a id="center_sense_link" href="https://www.wikipedia.org" target="_blank"><img src="wikipedia.png" style="height:0.6em;"></a>
             <audio id="player" src=""></audio>
-            <button id="play_button" onclick="play();" class="clickable">▶</button>
+            <button id="play_button" onclick="play();" class="clickable">🔈</button>
             <a id="wiktionary_link" target="_blank" href="https://www.wiktionary.org"><img src="wiktionary.png" style="height:1em;"></a>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
         <div id="meannext" onclick="next_meaning()" class="clickable">
             <div id="meannext_cover">
-                <div id="meannext_cover_throbber">⟳</div>
+                <div id="meannext_cover_throbber">⏳</div>
             </div>
             <b id="meannext_lemma"></b>
             &mdash;
@@ -1464,12 +1470,12 @@ audio {
         </div>
         <div id="etymon">
             <div id="etymon_cover">
-                <div id="etymon_cover_throbber">⟳</div>
+                <div id="etymon_cover_throbber">⏳</div>
             </div>
         </div>
         <div id="alphanext" onclick="animate_to_center('alphanext', alphanext_lid)" class="clickable">
             <div id="alphanext_cover">
-                <div id="alphanext_cover_throbber">⟳</div>
+                <div id="alphanext_cover_throbber">⏳</div>
             </div>
             <b id="alphanext_lemma"></b>
             &mdash;
@@ -1480,7 +1486,7 @@ audio {
         </div>
         <div id="hypo">
             <div id="hypo_cover">
-                <div id="hypo_cover_throbber">⟳</div>
+                <div id="hypo_cover_throbber">⏳</div>
             </div>
         </div>
         <svg id="helppage" width="90%" height="90%">

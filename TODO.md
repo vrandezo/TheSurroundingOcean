@@ -6,6 +6,15 @@
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
+- etymology is a bad word for that axis (bruno)
+- homeowner, wikipedia link goes to commons instead of japanese (mahir)
+- make axis always visible? (lydia)
+- underline looks like a link (lydia)
+ - make senses in an ordered list
+ - new sense new line
+ - mark selected sense somehow different than underline
+- change one translation or synonym (mahir)
+- make the empty fields look intentionally empty (no data)
 - navigate with keyboard through search results
 - navigate with keyboard through lists
 - speed up page
