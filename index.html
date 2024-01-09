@@ -5,7 +5,7 @@
         <title>Universe of Words</title>
         <script>
 let language = 'en';
-let focus_lid = 'L4129-S1'; // home
+let focus_lid = 'L296427-S1'; // home
 let etymon_lids = [];
 let derived_lids = [];
 let alphaprev_lid = null;
@@ -267,11 +267,15 @@ const get_hypos_from_sense = async ( sid ) => {
         sense.hypos = hypo_ids;
         return sense.hypos;
     }
+    const lexeme = await get_entity( sid );
+    const focus_lang_qid = lexeme.language;
     const subclass_lexemes = await ask_sparql(`select distinct ?lexeme {
         wd:${sid} wdt:P5137 ?item .
         ?hypo wdt:P279 ?item .
         ?lexeme wdt:P5137 ?hypo .
-    } limit 50`);
+        ?actual_lexeme ontolex:sense ?lexeme .
+        ?actual_lexeme dct:language wd:${focus_lang_qid} .
+    }`);
     if (subclass_lexemes.length > 0) {
         sense.hypos = subclass_lexemes;
         return sense.hypos;
@@ -666,10 +670,14 @@ const get_hypers = async (lsid) => {
     if ('hyper' in sense.claims) {
         return sense.hyper;
     }
+
+    const focus_lang_qid = lexeme.language;
     const hyper_ids = await ask_sparql(`select distinct ?lexeme {
         wd:${lsid} wdt:P5137 ?item .
         ?item wdt:P279 ?hyper .
         ?lexeme wdt:P5137 ?hyper .
+        ?actual_lexeme ontolex:sense ?lexeme .
+        ?actual_lexeme dct:language wd:${focus_lang_qid} .
     }`);
     sense.hyper = hyper_ids;
     return sense.hyper;
@@ -711,7 +719,7 @@ const set_focus = async () => {
     if (urlParams.has('lid')) {
         focus_lid = urlParams.get('lid');
     } else {
-        focus_lid = 'L4129-S1';
+        focus_lid = 'L296427-S1';
     }
     if (urlParams.has('lang')) {
         language = urlParams.get('lang');

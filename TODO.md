@@ -19,7 +19,6 @@
 - add IPA, syllabilization? next to audio button?
 - fix right to left languages
 - Meaning hierarchy
-  - maybe stay within language?
   - check out P279 transitively
   - check out P31 as well
   - ensure what is seen is stable
