@@ -75,13 +75,20 @@ const get_image = async (lid) => {
       ?item wdt:P18 ?lexeme .
     } } limit 1`);
     if (result.length === 0) {
-        return null;
+        lexeme.image = {
+            image_page: null,
+            image_link: null
+        };
+        return lexeme.image;
     }
     result = result[0].slice(20);
     const response = await fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&titles=File%3A' + result + '&formatversion=2&iiprop=url&origin=*');
     const answer = await response.json();
     const fileurl = answer.query.pages[0].imageinfo[0].url;
-    lexeme.image = fileurl;
+    lexeme.image = {
+        image_page: 'https://commons.wikimedia.org/wiki/File:' + result,
+        image_link: fileurl
+    };
     return lexeme.image;
 }
 
@@ -696,11 +703,12 @@ const set_focus = async () => {
 
     const lexeme = await get_entity( focus_lid );
 
-    const image = await get_image( focus_lid );
-    if (image !== null) {
-        document.getElementById('image').src = image;
+    const { image_page, image_link } = await get_image( focus_lid );
+    if (image_link !== null) {
+        document.getElementById('image').src = image_link;
+        document.getElementById('image_link').href = image_page;
     }
-    hide((image === null), 'image');
+    hide((image_link === null), 'image_link');
 
     document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + lid_from_lsid( focus_lid );
 
@@ -1199,6 +1207,9 @@ audio {
     background-color: white;
 }
 #image {
+    width: 100%;
+}
+#image_link {
     width: 40%;
     float: right;
     display: none;
@@ -1316,7 +1327,7 @@ audio {
             <span id="meanprev_sense"></span>
         </div>
         <div id="center">
-            <img id="image" src="" />
+            <a id="image_link" href="" target="_blank"><img id="image" src="" /></a>
             <b id="center_lemma"></b>
             &mdash;
             <i id="center_language"></i>
