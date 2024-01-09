@@ -1,14 +1,11 @@
 # Next
-- add language selector
-  - ensure languages work
-  - Test right to left languages
+- internationalize help overlay
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- internationalize help overlay
 - navigate with keyboard through search results
 - navigate with keyboard through lists
 - speed up page
@@ -20,6 +17,7 @@
 - prevent keyboard or click events when not ready
 - underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
+- fix right to left languages
 - Meaning hierarchy
   - maybe stay within language?
   - check out P279 transitively

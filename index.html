@@ -892,6 +892,35 @@ const click_search = () => {
     }
 }
 
+const in_language = () => (document.getElementById( 'language_screen').style.display === 'block');
+
+const click_language = () => {
+    if (in_language()) {
+        end_language();
+    } else {
+        start_language();
+    }
+}
+
+const start_language = () => {
+    document.getElementById( 'language_input' ).value = language;
+    document.getElementById( 'language_screen').style.display = 'block';
+    document.getElementById( 'language_input' ).focus();
+}
+
+const end_language = () => {
+    document.getElementById( 'language_screen').style.display = 'none';
+}
+
+const set_language = async () => {
+    const to_set = document.getElementById( 'language_input' ).value;
+    const url = new URL( window.location );
+    url.searchParams.set('lang', to_set);
+    window.history.pushState({}, '', url);
+    end_language();
+    await set_focus();
+}
+
 const choose_result = async (lid) => {
     end_search();
     move_to(lid);
@@ -912,6 +941,15 @@ const pressedkey = () => {
         }
         if ([27].includes(key)) {
             end_search();
+        }
+        return;
+    }
+    if (in_language()) {
+        if ([13].includes(key)) {
+            set_language();
+        }
+        if ([27].includes(key)) {
+            end_language();
         }
         return;
     }
@@ -1233,6 +1271,23 @@ audio {
     cursor: pointer;
     background-color: white;
 }
+#language_button {
+    background-color: linen;
+    position: absolute;
+    bottom: 0.2em;
+    right: 5.3em;
+    height: 1.5em;
+    width: 1.5em;
+    border-width: thin;
+    font-size: xx-large;
+    border-radius: 0.2em;
+    border-style: dashed;
+}
+#language_button:hover {
+    color: black;
+    cursor: pointer;
+    background-color: white;
+}
 #image {
     width: 100%;
 }
@@ -1316,6 +1371,27 @@ audio {
 .search_result:hover {
     background-color: azure;
     cursor: pointer;
+}
+#language_screen {
+    display: none;
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(250, 240, 230, 0.6);
+}
+#language_input {
+    position: absolute;
+    top: 45%;
+    left: 40%;
+    width: 4em;
+    font-size: x-large;
+    padding: 0.2em;
+    box-sizing: border-box;
+    border-radius: 0.2em;
+    border-width: 0.1em;
+    outline: none;
 }
 
         </style>
@@ -1414,6 +1490,13 @@ audio {
             <input id="search" type="text" />
             <div id="search_results"></div>
         </div>
+        <div id="language_screen">
+            <input id="language_input" type="text" />
+        </div>
+        <button id="language_button" onclick="click_language()">
+            <span style="position: absolute; top: 0.3em; left: 0.4em; font-size: large; vertical-align: super;">文</span>
+            <span style="position: absolute; bottom: 0.3em; right: 0.4em; font-size: large; vertical-align: sub;">A</span>
+        </button>
         <button id="documentation_button" onclick="parent.open('https://www.wikidata.org/wiki/Wikidata:World_of_Words')">?</button>
         <button id="search_button" onclick="click_search()">🔍</button>
         <button id="help_button"
