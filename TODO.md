@@ -1,15 +1,14 @@
 # Next
-- use item for this sense for senses for alternative glosses in language
+- add language selector
+  - ensure languages work
+  - Test right to left languages
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- add language selector
-  - ensure languages work
-  - Test right to left languages
-- internationalize help
+- internationalize help overlay
 - navigate with keyboard through search results
 - navigate with keyboard through lists
 - speed up page

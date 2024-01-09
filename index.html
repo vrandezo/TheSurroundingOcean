@@ -198,19 +198,46 @@ const get_alphanext = async (lid) => {
     return lexeme.alphanext[ 0 ];
 };
 
-const select_text = ( arr, show_fallback = false ) => {
+const select_text = ( arr ) => {
     const languages = Object.keys( arr );
     if ( languages.length === 0 ) { return ''; };
     if ( languages.includes( language )) {
         return arr[ language ].value;
     } else {
-        if (show_fallback) {
-            return '(' + languages[0] + ': ' + arr[ languages[0] ].value + ')';
-        } else {
-            return arr[ languages[0] ].value;
-        }
+        return arr[ languages[0] ].value;
     }
 };
+
+const get_gloss = async ( sense ) => {
+    const glosses = sense.glosses;
+    const languages = Object.keys( glosses );
+    if ( languages.includes( language )) {
+        return glosses[ language ].value;
+    }
+    const item_ids = [];
+    if ('P5137' in sense.claims) {
+        const items = sense.claims.P5137;
+        for (let item_snak of items) {
+            if (item_snak.mainsnak.snaktype !== 'value') {
+                continue;
+            }
+            const item_id = item_snak.mainsnak.datavalue.value.id;
+            item_ids.push( item_id );
+        }
+    }
+    if (item_ids.length > 0) {
+        for (const item_id of item_ids) {
+            const item = await get_entity( item_id );
+            if ( language in item.labels && language in item.descriptions ) {
+                return item.labels[language].value + '; ' + item.descriptions[language].value;
+            }
+        }
+    }
+    if (languages.length === 0) {
+        return '';
+    }
+    return '(' + languages[0] + ': ' + glosses[ languages[0] ].value + ')';
+}
 
 const get_items_for_this_sense = async ( qid ) => {
     const item = await get_entity( qid );
@@ -424,7 +451,7 @@ const display = async (where, lsid, nosense = false) => {
             hide( true, 'center_sense_link');
         }
     } else if (senses.length === 1) {
-        const sense_text = select_text( senses[0].glosses, true );
+        const sense_text = await get_gloss( senses[0] );
         put(where, 'sense', sense_text );
         if (where === 'center') {
             const sense_id = senses[0].id;
@@ -459,7 +486,7 @@ const display = async (where, lsid, nosense = false) => {
         const root = document.getElementById (where + '_sense' );
         root.innerHTML = inner;
         for (let i = 1; i <= senses.length; i++) {
-            const gloss = select_text( senses[i-1].glosses, true );
+            const gloss = await get_gloss( senses[i-1] );
             const sense_id = senses[i-1].id;
             document.getElementById( where + '-' + sense_id + '-gloss').textContent = gloss;
         }
@@ -480,7 +507,7 @@ const display_list = async (where, lids) => {
                     onclick="animate_to_center('${where}', '${lids[i-1]}')">
                 <b id="${where}${i.toString()}_lemma"></b>
                 &mdash;
-                <i id="${where}${i.toString()}_language"></i>
+                <i id="${where}${i.toString()}_language"></i>,
                 <i id="${where}${i.toString()}_pos"></i>
                 <span id="${where}${i.toString()}_sense_dash">&mdash;</span>
                 <span id="${where}${i.toString()}_sense"></span>
@@ -1305,7 +1332,7 @@ audio {
             </div>
             <b id="alphaprev_lemma"></b>
             &mdash;
-            <i id="alphaprev_language"></i>
+            <i id="alphaprev_language"></i>,
             <i id="alphaprev_pos"></i>
             <span id="alphaprev_sense_dash">&mdash;</span>
             <span id="alphaprev_sense"></span>
@@ -1321,7 +1348,7 @@ audio {
             </div>
             <b id="meanprev_lemma"></b>
             &mdash;
-            <i id="meanprev_language"></i>
+            <i id="meanprev_language"></i>,
             <i id="meanprev_pos"></i>
             <span id="meanprev_sense_dash">&mdash;</span>
             <span id="meanprev_sense"></span>
@@ -1330,7 +1357,7 @@ audio {
             <a id="image_link" href="" target="_blank"><img id="image" src="" /></a>
             <b id="center_lemma"></b>
             &mdash;
-            <i id="center_language"></i>
+            <i id="center_language"></i>,
             <i id="center_pos"></i>
             <span id="center_sense_dash">&mdash;</span>
             <span id="center_sense"></span>
@@ -1346,7 +1373,7 @@ audio {
             </div>
             <b id="meannext_lemma"></b>
             &mdash;
-            <i id="meannext_language"></i>
+            <i id="meannext_language"></i>,
             <i id="meannext_pos"></i>
             <span id="meannext_sense_dash">&mdash;</span>
             <span id="meannext_sense"></span>
@@ -1362,7 +1389,7 @@ audio {
             </div>
             <b id="alphanext_lemma"></b>
             &mdash;
-            <i id="alphanext_language"></i>
+            <i id="alphanext_language"></i>,
             <i id="alphanext_pos"></i>
             <span id="alphanext_sense_dash">&mdash;</span>
             <span id="alphanext_sense"></span>
