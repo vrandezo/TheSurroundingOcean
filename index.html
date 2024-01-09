@@ -1174,6 +1174,23 @@ audio {
     cursor: pointer;
     background-color: white;
 }
+#documentation_button {
+    background-color: linen;
+    position: absolute;
+    bottom: 0.2em;
+    right: 3.6em;
+    height: 1.5em;
+    width: 1.5em;
+    border-width: thin;
+    font-size: xx-large;
+    border-radius: 0.2em;
+    border-style: dashed;
+}
+#documentation_button:hover {
+    color: black;
+    cursor: pointer;
+    background-color: white;
+}
 #image {
     width: 40%;
     float: right;
@@ -1340,23 +1357,24 @@ audio {
         <svg id="helppage" width="90%" height="90%">
             <line x1="10%" y1="90%" x2="90%" y2="10%" stroke="red" stroke-linecap="round" stroke-width="1em" />
             <text x="15%" y="92%" transform-origin="15% 92%" transform="rotate(-45)" class="helptext" id="etymologytext">etymology</text>
-            <line x1="10%" y1="10%" x2="90%" y2="90%" stroke="blue" stroke-linecap="round" stroke-width="1em" />
+            <line x1="10%" y1="10%" x2="90%" y2="90%" stroke="lightblue" stroke-linecap="round" stroke-width="1em" />
             <text x="10%" y="10%" transform-origin="10% 10%" transform="rotate(45)" class="helptext" id="hierarchytext">hierarchy</text>
-            <line x1="10%" y1="50%" x2="90%" y2="50%" stroke="green" stroke-linecap="round" stroke-width="1em" />
+            <line x1="10%" y1="50%" x2="90%" y2="50%" stroke="lightgreen" stroke-linecap="round" stroke-width="1em" />
             <text x="5%" y="47%" class="helptext" id="translationtext">translation</text>
             <text x="5%" y="57%" class="helptext" id="synonymtext">synonym</text>
-            <line x1="50%" y1="10%" x2="50%" y2="90%" stroke="purple" stroke-linecap="round" stroke-width="1em" />
+            <line x1="50%" y1="10%" x2="50%" y2="90%" stroke="yellow" stroke-linecap="round" stroke-width="1em" />
             <text x="53%" y="6%" transform-origin="53% 6%" transform="rotate(90)" class="helptext" id="alphabettext">alphabet</text>
         </svg>
         <div id="search_screen">
             <input id="search" type="text" />
             <div id="search_results"></div>
         </div>
+        <button id="documentation_button" onclick="parent.open('https://www.wikidata.org/wiki/Wikidata:World_of_Words')">?</button>
         <button id="search_button" onclick="click_search()">🔍</button>
         <button id="help_button"
                 onmouseenter="display_help()" onmouseleave="hide_help()"
                 ontouchstart="display_help()" ontouchend="hide_help()"
                 onmousedown="display_help()" onmouseup="hide_help()"
-            >?</button>
+            >☸</button>
     </body>
 </html>

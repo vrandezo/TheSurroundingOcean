@@ -1,12 +1,11 @@
 # Next
+- add README, LICENSE, CODE OF CONDUCT etc.
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- add about
-- add README, LICENSE, CODE OF CONDUCT etc.
 - use item for this sense for senses for alternative glosses in language
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - add language selector
