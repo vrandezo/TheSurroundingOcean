@@ -1,33 +1,35 @@
 # Next
-- animate navigation
+- add about
+- add README, LICENSE, CODE OF CONDUCT etc.
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- display help on keypress
-- display something to display help
-- add about
-- add README, LICENSE, CODE OF CONDUCT etc.
-- audit all awaits if they are really necessary
-- use item for this sense for senses for alternative glosses in language
 - search for a lexeme?
+- use item for this sense for senses for alternative glosses in language
 - add language selector
   - ensure languages work
   - Test right to left languages
+- speed up page
+ - audit all awaits if they are really necessary
+ - order animation and awaits better
+ - use get_entities that gets more than one entity
 - navigate with keyboard through lists
 - etymon also P5425 (has Han characters)
-- Meaning hierarchy
-  - re hierarchy, check out P279 and P31 in addition to P6593 and their statements
-  - cache meaninig hierarchy
-  - ensure what is seen is stable
 - prevent keyboard or click events when not ready
 - underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
 - figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
+- Meaning hierarchy
+  - maybe stay within language?
+  - check out P279 transitively
+  - check out P31 as well
+  - ensure what is seen is stable
+  - going down, currently aribtrary limit of 50
 - images
- - deal with images that are too long?
+ - deal with images that have too much height?
  - add icon P2910 to image,  would add: 3 on Lexeme / 20 on Senses / 5,000 on items 
  - maybe make it cream and brown for an inactive sense?
 - Meaning rings
