@@ -390,7 +390,14 @@ const display = async (where, lsid, nosense = false) => {
     const lexeme = await get_entity( lid );
     const lexeme_language_qid = lexeme.language;
     const lexeme_language = await get_entity( lexeme_language_qid );
-    const lemma = select_text( lexeme.lemmas );
+
+    let lemma = '';
+    for (const lemmata in lexeme.lemmas) {
+        if (lemma !== '') {
+            lemma += ' / ';
+        }
+        lemma += lexeme.lemmas[lemmata].value;
+    }
     const language_label = select_text( lexeme_language.labels );
     const lexical_category_qid = lexeme.lexicalCategory;
     const lexical_category = await get_entity( lexical_category_qid );
