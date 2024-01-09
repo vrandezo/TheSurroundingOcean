@@ -1,5 +1,4 @@
 # Next
-- add a search button next to the question mark
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
@@ -8,22 +7,23 @@
 # Todos
 - add about
 - add README, LICENSE, CODE OF CONDUCT etc.
-- internationalize help
-- navigate with keyboard through search results
 - use item for this sense for senses for alternative glosses in language
+- figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - add language selector
   - ensure languages work
   - Test right to left languages
+- internationalize help
+- navigate with keyboard through search results
 - speed up page
  - audit all awaits if they are really necessary
  - order animation and awaits better
- - use get_entities that gets more than one entity
+ - add get_entities that takes and returns a list
+ - use get_entities that gets more than one entity at once
 - navigate with keyboard through lists
 - etymon also P5425 (has Han characters)
 - prevent keyboard or click events when not ready
 - underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
-- figure out different lemmas with other language codes (eg en-US and en-GB or different alphabets)
 - Meaning hierarchy
   - maybe stay within language?
   - check out P279 transitively
@@ -38,7 +38,7 @@
   - P6271 (demonym)
   - ensure what was seen stable, but add on the way
   - caches of meaning rings
-  - store the sense ID when moving away from a lexeme and coming back
+- store the sense ID when moving away from a lexeme and coming back
 - It seems that when the same lemma gets at the border we might skip homophones eg honey the noun
   - Solve by putting >= instead of >
   - increase the limit from 10 considerably for speed up
@@ -47,6 +47,4 @@
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations
 - deal better with more than one audio
-- add get_entities that takes and returns a list
 - what happens when loaded with invalid lid
-- press navigation button to a field that doesn't exist (e.g. to etymon when there is none)
