@@ -1,20 +1,18 @@
 # Next
-- internationalize help overlay
+- homeowner, wikipedia link goes to commons instead of japanese (mahir)
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- etymology is a bad word for that axis (bruno)
-- homeowner, wikipedia link goes to commons instead of japanese (mahir)
-- make axis always visible? (lydia)
 - underline looks like a link (lydia)
  - make senses in an ordered list
  - new sense new line
  - mark selected sense somehow different than underline
 - change one translation or synonym (mahir)
 - make the empty fields look intentionally empty (no data)
+- make axis always visible? (lydia)
 - navigate with keyboard through search results
 - navigate with keyboard through lists
 - speed up page
@@ -49,6 +47,6 @@
  - maybe other special relations?
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations e.g. of Hangul or Harigana or Greek or Cyrillic
-- navigation animation from lists takes always the whole list instead of only the single entry
+- navigation animation from lists takes always the whole list instead of only the single entry (inline is not animatable)
 - deal better with more than one audio
 - what happens when loaded with invalid lid

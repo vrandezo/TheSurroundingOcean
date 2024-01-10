@@ -198,11 +198,11 @@ const get_alphanext = async (lid) => {
     return lexeme.alphanext[ 0 ];
 };
 
-const select_text = ( arr ) => {
+const select_text = ( arr, lang = language ) => {
     const languages = Object.keys( arr );
     if ( languages.length === 0 ) { return ''; };
-    if ( languages.includes( language )) {
-        return arr[ language ].value;
+    if ( languages.includes( lang )) {
+        return arr[ lang ].value;
     } else {
         return arr[ languages[0] ].value;
     }
@@ -848,14 +848,6 @@ const play = () => {
     document.getElementById('player').play();
 };
 
-const initialize = async () => {
-    await set_focus();
-
-    addEventListener( 'popstate', (event) => {
-        set_focus();
-    });
-};
-
 const hide_help = () => {
     document.getElementById('helppage').style.display = 'none';
 }
@@ -926,6 +918,7 @@ const set_language = async () => {
     url.searchParams.set('lang', to_set);
     window.history.pushState({}, '', url);
     end_language();
+    labelize_help_screen(to_set);
     await set_focus();
 }
 
@@ -1002,6 +995,31 @@ const pressedkey = () => {
     }
     // console.log(key);
 };
+
+const put_item_label = async (field, qid, lang) => {
+    const item = await get_entity(qid);
+    const label = await select_text(item.labels, lang);
+    put(field, 'text', label);
+}
+
+const labelize_help_screen = async (lang) => {
+    put_item_label('translation', 'Q7553', lang);
+    put_item_label('synonym', 'Q1040689', lang);
+    put_item_label('compound', 'Q245423', lang);
+    put_item_label('etymology', 'Q35245', lang);
+    put_item_label('alphabet', 'Q10925', lang);
+    put_item_label('hierarchy', 'Q188619', lang);
+}
+
+const initialize = async () => {
+    await set_focus();
+
+    addEventListener( 'popstate', (event) => {
+        set_focus();
+    });
+    labelize_help_screen(language);
+};
+
         </script>
         <style>
 body {
@@ -1491,14 +1509,15 @@ audio {
         </div>
         <svg id="helppage" width="90%" height="90%">
             <line x1="10%" y1="90%" x2="90%" y2="10%" stroke="red" stroke-linecap="round" stroke-width="1em" />
-            <text x="15%" y="92%" transform-origin="15% 92%" transform="rotate(-45)" class="helptext" id="etymologytext">etymology</text>
+            <text x="15%" y="92%" transform-origin="15% 92%" transform="rotate(-45)" class="helptext" id="etymology_text">etymology</text>
+            <text x="10%" y="82%" transform-origin="10% 82%" transform="rotate(-45)" class="helptext" id="compound_text">compound</text>
             <line x1="10%" y1="10%" x2="90%" y2="90%" stroke="lightblue" stroke-linecap="round" stroke-width="1em" />
-            <text x="10%" y="10%" transform-origin="10% 10%" transform="rotate(45)" class="helptext" id="hierarchytext">hierarchy</text>
+            <text x="10%" y="10%" transform-origin="10% 10%" transform="rotate(45)" class="helptext" id="hierarchy_text">hierarchy</text>
             <line x1="10%" y1="50%" x2="90%" y2="50%" stroke="lightgreen" stroke-linecap="round" stroke-width="1em" />
-            <text x="5%" y="47%" class="helptext" id="translationtext">translation</text>
-            <text x="5%" y="57%" class="helptext" id="synonymtext">synonym</text>
+            <text x="5%" y="47%" class="helptext" id="translation_text">translation</text>
+            <text x="5%" y="57%" class="helptext" id="synonym_text">synonym</text>
             <line x1="50%" y1="10%" x2="50%" y2="90%" stroke="yellow" stroke-linecap="round" stroke-width="1em" />
-            <text x="53%" y="6%" transform-origin="53% 6%" transform="rotate(90)" class="helptext" id="alphabettext">alphabet</text>
+            <text x="53%" y="6%" transform-origin="53% 6%" transform="rotate(90)" class="helptext" id="alphabet_text">alphabet</text>
         </svg>
         <div id="search_screen">
             <input id="search" type="text" />
