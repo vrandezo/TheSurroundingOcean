@@ -203,6 +203,8 @@ const select_text = ( arr, lang = language ) => {
     if ( languages.length === 0 ) { return ''; };
     if ( languages.includes( lang )) {
         return arr[ lang ].value;
+    } else if ( languages.includes( 'en' )) {
+        return arr.en.value;
     } else {
         return arr[ languages[0] ].value;
     }
@@ -1536,6 +1538,6 @@ audio {
                 onmouseenter="display_help()" onmouseleave="hide_help()"
                 ontouchstart="display_help()" ontouchend="hide_help()"
                 onmousedown="display_help()" onmouseup="hide_help()"
-            >☸</button>
+            >✳</button>
     </body>
 </html>
