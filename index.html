@@ -469,7 +469,7 @@ const display = async (where, lsid, nosense = false) => {
         }
     } else {
         put(where, 'sense', '');
-        let inner = '';
+        let inner = '<ol>';
         for (let i = 1; i <= senses.length; i++) {
             const sense_id = senses[i-1].id;
             let action = '';
@@ -477,18 +477,20 @@ const display = async (where, lsid, nosense = false) => {
                 action = `onclick="move_to('${sense_id}')" class="clickable"`;
             }
             inner += `
-                <span id="${where}-${sense_id}" ${action}>
-                    ${i.toString()}.&nbsp;<span id="${where}-${sense_id}-gloss"></span></span>&nbsp;`;
+                <li id="${where}-${sense_id}" ${action}>
+                    <span id="${where}-${sense_id}-gloss"></span>`;
             if (where === 'center') {
                 hide( true, 'center_sense_link');
                 const wikipedia_link = await get_wikipedia_link( sense_id );
                 if (wikipedia_link !== null) {
                     inner += `<a href="${wikipedia_link}"  target="_blank">` +
-                             `<img src="wikipedia.png" class="wikilink" /></a>&nbsp;`
+                             `<img src="wikipedia.png" class="wikilink" /></a>`
                 }
             }
             inner += `&nbsp;`;
         }
+        inner += '</ol>';
+        hide(true, 'center_sense_dash');
         const root = document.getElementById (where + '_sense' );
         root.innerHTML = inner;
         for (let i = 1; i <= senses.length; i++) {
@@ -1335,14 +1337,16 @@ audio {
 #center_sense_link {
     display: none;
 }
-.highlight_sense {
-    text-decoration: underline;
+ol {
+    list-style-position: inside;
+    padding: 0em;
+    margin-top: 0.2em;
 }
-.highlight_sense:hover {
-    text-decoration: underline;
-    background-color: linen;
-    color: rgb(64, 0, 0);
-    cursor: text;
+li {
+    padding-left: 0.2em;
+}
+.highlight_sense {
+    box-shadow: -0.1em 0em 0em 0em rgb(64, 0, 0);
 }
 #helppage {
     position: absolute;

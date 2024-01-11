@@ -6,12 +6,12 @@
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- underline looks like a link (lydia)
- - make senses in an ordered list
- - new sense new line
- - mark selected sense somehow different than underline
+- empty search results are not giving feedback that the search failed
+- Wikidata and Wiktionary link should stay fixed at the bottom
+- we load the hypers everytime instead of caching
+- make the empty fields look intentionally empty (no data) 🤷
+ - different skin colors
 - change one translation or synonym (mahir)
-- make the empty fields look intentionally empty (no data)
 - make axis always visible? (lydia)
 - navigate with keyboard through search results
 - navigate with keyboard through lists
@@ -22,7 +22,6 @@
  - use get_entities that gets more than one entity at once
 - etymon also P5425 (has Han characters)
 - prevent keyboard or click events when not ready
-- underlined senses loose highlight when out of center and being hovered
 - add IPA, syllabilization? next to audio button?
 - fix right to left languages
 - Meaning hierarchy
