@@ -799,6 +799,7 @@ const set_focus = async () => {
     }
     await display_list( 'etymon', etymon_lids );
     hide((etymon_lids.length === 0), 'etymon');
+    hide((etymon_lids.length !== 0), 'etymon_empty_cover');
     uncover("etymon");
 
     derived_lids = await get_derived( focus_lid );
@@ -806,18 +807,21 @@ const set_focus = async () => {
         await display_list( 'derived', derived_lids );
     }
     hide((derived_lids.length === 0), 'derived');
+    hide((derived_lids.length !== 0), 'derived_empty_cover');
     uncover("derived");
 
     alphaprev_lid = await get_alphaprev( focus_lid );
     // console.log( alphaprev_lid );
     if (alphaprev_lid !== null) { await display( 'alphaprev', alphaprev_lid ); }
     hide((alphaprev_lid === null), 'alphaprev');
+    hide((alphaprev_lid !== null), 'alphaprev_empty_cover');
     uncover("alphaprev");
 
     alphanext_lid = await get_alphanext( focus_lid );
     // console.log( alphanext_lid );
     if (alphanext_lid !== null) { await display( 'alphanext', alphanext_lid ); }
     hide((alphanext_lid === null), 'alphanext');
+    hide((alphanext_lid !== null), 'alphanext_empty_cover');
     uncover("alphanext");
 
     meaning_ring = await get_meaning_ring( focus_lid );
@@ -826,12 +830,14 @@ const set_focus = async () => {
         await display( 'meannext', meaning_ring[nmi] );
     }
     hide((nmi === null), 'meannext');
+    hide((nmi !== null), 'meannext_empty_cover');
     uncover("meannext");
     const pmi = await previous_meaning_index();
     if (pmi !== null) {
         await display( 'meanprev', meaning_ring[pmi] );
     }
     hide((pmi === null), 'meanprev');
+    hide((pmi !== null), 'meanprev_empty_cover');
     uncover("meanprev");
 
     hyper_lids = await get_hypers( focus_lid );
@@ -839,6 +845,7 @@ const set_focus = async () => {
         await display_list( 'hyper', hyper_lids );
     }
     hide((hyper_lids.length === 0), 'hyper');
+    hide((hyper_lids.length !== 0), 'hyper_empty_cover');
     uncover("hyper");
 
     hypo_lids = await get_hypos( focus_lid );
@@ -846,6 +853,7 @@ const set_focus = async () => {
         await display_list( 'hypo', hypo_lids );
     }
     hide((hypo_lids.length === 0), 'hypo');
+    hide((hypo_lids.length !== 0), 'hypo_empty_cover');
     uncover("hypo");
 };
 
@@ -1064,6 +1072,19 @@ body {
     width: 25%;
     overflow: auto;
 }
+#hyper_empty_cover {
+    display: none;
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    height: 25%;
+    width: 25%;
+}
+#hyper_empty {
+    position: relative;
+    text-align: center;
+    font-size: 200%;
+}
 #hyper_cover {
     position: absolute;
     height: 100%;
@@ -1084,6 +1105,19 @@ body {
     height: 25%;
     width: 40%;
     overflow: auto;
+}
+#alphaprev_empty_cover {
+    display: none;
+    position: absolute;
+    top: 2%;
+    left: 30%;
+    height: 25%;
+    width: 40%;
+}
+#alphaprev_empty {
+    position: relative;
+    text-align: center;
+    font-size: 200%;
 }
 #alphaprev_cover {
     position: absolute;
@@ -1106,6 +1140,19 @@ body {
     width: 25%;
     overflow: auto;
 }
+#derived_empty_cover {
+    display: none;
+    position: absolute;
+    top: 2%;
+    left: 74%;
+    height: 25%;
+    width: 25%;
+}
+#derived_empty {
+    position: relative;
+    text-align: center;
+    font-size: 200%;
+}
 #derived_cover {
     position: absolute;
     height: 100%;
@@ -1127,6 +1174,20 @@ body {
     width: 25%;
     overflow: auto;
 }
+#meanprev_empty_cover {
+    display: none;
+    position: absolute;
+    top: 30%;
+    left: 2%;
+    height: 40%;
+    width: 25%;
+}
+#meanprev_empty {
+    position: relative;
+    top: 20%;
+    text-align: center;
+    font-size: 200%;
+}
 #meanprev_cover {
     position: absolute;
     height: 100%;
@@ -1147,6 +1208,20 @@ body {
     height: 40%;
     width: 25%;
     overflow: auto;
+}
+#meannext_empty_cover {
+    display: none;
+    position: absolute;
+    top: 30%;
+    left: 74%;
+    height: 40%;
+    width: 25%;
+}
+#meannext_empty {
+    position: relative;
+    top: 20%;
+    text-align: center;
+    font-size: 200%;
 }
 #meannext_cover {
     position: absolute;
@@ -1170,6 +1245,19 @@ body {
     display: none;
     overflow: auto;
 }
+#etymon_empty_cover {
+    display: none;
+    position: absolute;
+    top: 74%;
+    left: 2%;
+    height: 25%;
+    width: 25%;
+}
+#etymon_empty {
+    position: relative;
+    text-align: center;
+    font-size: 200%;
+}
 #etymon_cover {
     position: absolute;
     height: 100%;
@@ -1190,6 +1278,19 @@ body {
     width: 40%;
     overflow: auto;
 }
+#alphanext_empty_cover {
+    display: none;
+    position: absolute;
+    top: 74%;
+    left: 30%;
+    height: 25%;
+    width: 40%;
+}
+#alphanext_empty {
+    position: relative;
+    text-align: center;
+    font-size: 200%;
+}
 #alphanext_cover {
     position: absolute;
     height: 100%;
@@ -1209,6 +1310,19 @@ body {
     height: 25%;
     width: 25%;
     overflow: auto;
+}
+#hypo_empty_cover {
+    display: none;
+    position: absolute;
+    top: 74%;
+    left: 74%;
+    height: 25%;
+    width: 25%;
+}
+#hypo_empty {
+    position: relative;
+    text-align: center;
+    font-size: 200%;
 }
 #hypo_cover {
     position: absolute;
@@ -1442,6 +1556,9 @@ li {
                 <div id="hyper_cover_throbber">⏳</div>
             </div>
         </div>
+        <div id="hyper_empty_cover">
+            <div id="hyper_empty">⛞</div>
+        </div>
         <div id="alphaprev" onclick="animate_to_center('alphaprev', alphaprev_lid)" class="clickable">
             <div id="alphaprev_cover">
                 <div id="alphaprev_cover_throbber">⏳</div>
@@ -1453,10 +1570,16 @@ li {
             <span id="alphaprev_sense_dash">&mdash;</span>
             <span id="alphaprev_sense"></span>
         </div>
+        <div id="alphaprev_empty_cover">
+            <div id="alphaprev_empty">⛞</div>
+        </div>
         <div id="derived">
             <div id="derived_cover">
                 <div id="derived_cover_throbber">⏳</div>
             </div>
+        </div>
+        <div id="derived_empty_cover">
+            <div id="derived_empty">⛞</div>
         </div>
         <div id="meanprev" onclick="previous_meaning()" class="clickable">
             <div id="meanprev_cover">
@@ -1468,6 +1591,9 @@ li {
             <i id="meanprev_pos"></i>
             <span id="meanprev_sense_dash">&mdash;</span>
             <span id="meanprev_sense"></span>
+        </div>
+        <div id="meanprev_empty_cover">
+            <div id="meanprev_empty">⛞</div>
         </div>
         <div id="center">
             <a id="image_link" href="" target="_blank"><img id="image" src="" /></a>
@@ -1494,10 +1620,16 @@ li {
             <span id="meannext_sense_dash">&mdash;</span>
             <span id="meannext_sense"></span>
         </div>
+        <div id="meannext_empty_cover">
+            <div id="meannext_empty">⛞</div>
+        </div>
         <div id="etymon">
             <div id="etymon_cover">
                 <div id="etymon_cover_throbber">⏳</div>
             </div>
+        </div>
+        <div id="etymon_empty_cover">
+            <div id="etymon_empty">⛞</div>
         </div>
         <div id="alphanext" onclick="animate_to_center('alphanext', alphanext_lid)" class="clickable">
             <div id="alphanext_cover">
@@ -1510,10 +1642,16 @@ li {
             <span id="alphanext_sense_dash">&mdash;</span>
             <span id="alphanext_sense"></span>
         </div>
+        <div id="alphanext_empty_cover">
+            <div id="alphanext_empty">⛞</div>
+        </div>
         <div id="hypo">
             <div id="hypo_cover">
                 <div id="hypo_cover_throbber">⏳</div>
             </div>
+        </div>
+        <div id="hypo_empty_cover">
+            <div id="hypo_empty">⛞</div>
         </div>
         <svg id="helppage" width="90%" height="90%">
             <line x1="10%" y1="90%" x2="90%" y2="10%" stroke="red" stroke-linecap="round" stroke-width="1em" />
