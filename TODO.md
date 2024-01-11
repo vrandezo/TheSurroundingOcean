@@ -7,7 +7,6 @@
 
 # Todos
 - empty search results are not giving feedback that the search failed
-- we load the hypers everytime instead of caching
 - make the empty fields look intentionally empty (no data) 🤷
  - different skin colors
 - change one translation or synonym (mahir)

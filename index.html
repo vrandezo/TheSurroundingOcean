@@ -671,7 +671,7 @@ const get_hypers = async (lsid) => {
     if (result.length > 0) {
         return result;
     }
-    if ('hyper' in sense.claims) {
+    if ('hyper' in sense) {
         return sense.hyper;
     }
 
