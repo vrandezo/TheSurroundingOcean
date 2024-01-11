@@ -508,9 +508,7 @@ const display = async (where, lsid, nosense = false) => {
 
 const display_list = async (where, lids) => {
     // console.log( lids );
-    let inner = `<div id="${where}_cover">
-                    <div id="${where}_cover_throbber">⏳</div>
-                 </div>`;
+    let inner = '';
     for (let i = 1; i <= lids.length; i++) {
         inner += `
             <div id="${where}${i.toString()}" class="clickable"
@@ -713,6 +711,7 @@ const get_hypos = async (lsid) => {
 
 const cover = (element) => {
     document.getElementById(element + '_cover').style.display = 'block';
+    document.getElementById(element + '_empty_cover').style.display = 'none';
 };
 
 const uncover = (element) => {
@@ -1087,8 +1086,10 @@ body {
 }
 #hyper_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 2%;
+    left: 2%;
+    height: 25%;
+    width: 25%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #hyper_cover_throbber {
@@ -1121,8 +1122,10 @@ body {
 }
 #alphaprev_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 2%;
+    left: 30%;
+    height: 25%;
+    width: 40%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #alphaprev_cover_throbber {
@@ -1155,8 +1158,10 @@ body {
 }
 #derived_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 2%;
+    left: 74%;
+    height: 25%;
+    width: 25%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #derived_cover_throbber {
@@ -1190,8 +1195,10 @@ body {
 }
 #meanprev_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 30%;
+    left: 2%;
+    height: 40%;
+    width: 25%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #meanprev_cover_throbber {
@@ -1225,8 +1232,10 @@ body {
 }
 #meannext_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 30%;
+    left: 74%;
+    height: 40%;
+    width: 25%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #meannext_cover_throbber {
@@ -1260,8 +1269,10 @@ body {
 }
 #etymon_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 74%;
+    left: 2%;
+    height: 25%;
+    width: 25%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #etymon_cover_throbber {
@@ -1293,8 +1304,10 @@ body {
 }
 #alphanext_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 74%;
+    left: 30%;
+    height: 25%;
+    width: 40%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #alphanext_cover_throbber {
@@ -1326,8 +1339,10 @@ body {
 }
 #hypo_cover {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    top: 74%;
+    left: 74%;
+    height: 25%;
+    width: 25%;
     background-color: rgba(250, 240, 230, 0.8);
 }
 #hypo_cover_throbber {
@@ -1552,17 +1567,14 @@ li {
     </head>
     <body onkeydown="presskey()" onkeyup="pressedkey()" onload="initialize()">
         <div id="hyper">
-            <div id="hyper_cover">
-                <div id="hyper_cover_throbber">⏳</div>
-            </div>
+        </div>
+        <div id="hyper_cover">
+            <div id="hyper_cover_throbber">⏳</div>
         </div>
         <div id="hyper_empty_cover">
             <div id="hyper_empty">⛞</div>
         </div>
         <div id="alphaprev" onclick="animate_to_center('alphaprev', alphaprev_lid)" class="clickable">
-            <div id="alphaprev_cover">
-                <div id="alphaprev_cover_throbber">⏳</div>
-            </div>
             <b id="alphaprev_lemma"></b>
             &mdash;
             <i id="alphaprev_language"></i>,
@@ -1570,27 +1582,30 @@ li {
             <span id="alphaprev_sense_dash">&mdash;</span>
             <span id="alphaprev_sense"></span>
         </div>
+        <div id="alphaprev_cover">
+            <div id="alphaprev_cover_throbber">⏳</div>
+        </div>
         <div id="alphaprev_empty_cover">
             <div id="alphaprev_empty">⛞</div>
         </div>
         <div id="derived">
-            <div id="derived_cover">
-                <div id="derived_cover_throbber">⏳</div>
-            </div>
+        </div>
+        <div id="derived_cover">
+            <div id="derived_cover_throbber">⏳</div>
         </div>
         <div id="derived_empty_cover">
             <div id="derived_empty">⛞</div>
         </div>
         <div id="meanprev" onclick="previous_meaning()" class="clickable">
-            <div id="meanprev_cover">
-                <div id="meanprev_cover_throbber">⏳</div>
-            </div>
             <b id="meanprev_lemma"></b>
             &mdash;
             <i id="meanprev_language"></i>,
             <i id="meanprev_pos"></i>
             <span id="meanprev_sense_dash">&mdash;</span>
             <span id="meanprev_sense"></span>
+        </div>
+        <div id="meanprev_cover">
+            <div id="meanprev_cover_throbber">⏳</div>
         </div>
         <div id="meanprev_empty_cover">
             <div id="meanprev_empty">⛞</div>
@@ -1610,9 +1625,6 @@ li {
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
         </div>
         <div id="meannext" onclick="next_meaning()" class="clickable">
-            <div id="meannext_cover">
-                <div id="meannext_cover_throbber">⏳</div>
-            </div>
             <b id="meannext_lemma"></b>
             &mdash;
             <i id="meannext_language"></i>,
@@ -1620,21 +1632,21 @@ li {
             <span id="meannext_sense_dash">&mdash;</span>
             <span id="meannext_sense"></span>
         </div>
+        <div id="meannext_cover">
+            <div id="meannext_cover_throbber">⏳</div>
+        </div>
         <div id="meannext_empty_cover">
             <div id="meannext_empty">⛞</div>
         </div>
         <div id="etymon">
-            <div id="etymon_cover">
-                <div id="etymon_cover_throbber">⏳</div>
-            </div>
+        </div>
+        <div id="etymon_cover">
+            <div id="etymon_cover_throbber">⏳</div>
         </div>
         <div id="etymon_empty_cover">
             <div id="etymon_empty">⛞</div>
         </div>
         <div id="alphanext" onclick="animate_to_center('alphanext', alphanext_lid)" class="clickable">
-            <div id="alphanext_cover">
-                <div id="alphanext_cover_throbber">⏳</div>
-            </div>
             <b id="alphanext_lemma"></b>
             &mdash;
             <i id="alphanext_language"></i>,
@@ -1642,13 +1654,16 @@ li {
             <span id="alphanext_sense_dash">&mdash;</span>
             <span id="alphanext_sense"></span>
         </div>
+        <div id="alphanext_cover">
+            <div id="alphanext_cover_throbber">⏳</div>
+        </div>
         <div id="alphanext_empty_cover">
             <div id="alphanext_empty">⛞</div>
         </div>
         <div id="hypo">
-            <div id="hypo_cover">
-                <div id="hypo_cover_throbber">⏳</div>
-            </div>
+        </div>
+        <div id="hypo_cover">
+            <div id="hypo_cover_throbber">⏳</div>
         </div>
         <div id="hypo_empty_cover">
             <div id="hypo_empty">⛞</div>
