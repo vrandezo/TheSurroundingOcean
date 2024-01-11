@@ -379,6 +379,8 @@ const get_wikipedia_link = async ( lsid ) => {
             return item.sitelinks.enwiki.url;
         }
         for (const lang in item.sitelinks) {
+            if (lang === 'commonswiki') continue;
+            if (!lang.endsWith('wiki')) continue;
             return item.sitelinks[ lang ].url;
         }
     }

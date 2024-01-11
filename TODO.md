@@ -1,5 +1,6 @@
 # Next
-- homeowner, wikipedia link goes to commons instead of japanese (mahir)
+- make the empty fields look intentionally empty (no data) 🤷
+ - different skin colors
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
@@ -7,8 +8,6 @@
 
 # Todos
 - empty search results are not giving feedback that the search failed
-- make the empty fields look intentionally empty (no data) 🤷
- - different skin colors
 - change one translation or synonym (mahir)
 - make axis always visible? (lydia)
 - navigate with keyboard through search results
