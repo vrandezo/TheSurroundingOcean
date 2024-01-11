@@ -6,7 +6,7 @@
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- change one translation or synonym (mahir)
+- change one translation or synonym (mahir) 🔄
 - speed up page
  - audit all awaits if they are really necessary
  - order animation and awaits better
