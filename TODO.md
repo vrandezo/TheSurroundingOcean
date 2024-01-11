@@ -1,12 +1,11 @@
 # Next
-- empty search results are not giving feedback that the search failed
+- change one translation or synonym (mahir) 🔄
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- change one translation or synonym (mahir) 🔄
 - speed up page
  - audit all awaits if they are really necessary
  - order animation and awaits better

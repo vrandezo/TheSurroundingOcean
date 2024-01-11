@@ -881,7 +881,7 @@ const do_search = async () => {
                   `type=lexeme&limit=20&props=&formatversion=2&origin=*`;
     const response = await fetch(query);
     const results = await response.json();
-    let inner = '';
+    let inner = '<div id="search_results_none">⛞</div>';
     for (const result of results.search) {
         inner += `<div class="search_result" onclick="choose_result('${result.id}')">` + 
             `<strong style="font-size: x-large;">${result.label}</strong> &nbsp;&nbsp;` +
@@ -889,6 +889,7 @@ const do_search = async () => {
           `</div>`;
     }
     document.getElementById( 'search_results' ).innerHTML = inner;
+    hide((results.search.length !== 0), 'search_results_none');
 }
 
 const click_search = () => {
@@ -1522,6 +1523,11 @@ li {
     height: 70%;
     overflow: auto;
 }
+#search_results_none {
+    display: none;
+    text-align: center;
+    font-size: 200%;
+}
 .search_result {
     border: 0.05em;
     padding: 0.4em;
@@ -1677,7 +1683,8 @@ li {
         </svg>
         <div id="search_screen">
             <input id="search" type="text" />
-            <div id="search_results"></div>
+            <div id="search_results">
+            </div>
         </div>
         <div id="language_screen">
             <input id="language_input" type="text" />
