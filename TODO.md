@@ -7,14 +7,13 @@
 
 # Todos
 - change one translation or synonym (mahir)
-- make axis always visible? (lydia)
-- navigate with keyboard through search results
-- navigate with keyboard through lists
 - speed up page
  - audit all awaits if they are really necessary
  - order animation and awaits better
  - add get_entities that takes and returns a list
  - use get_entities that gets more than one entity at once
+- navigate with keyboard through search results
+- navigate with keyboard through lists
 - etymon also P5425 (has Han characters)
 - prevent keyboard or click events when not ready
 - add IPA, syllabilization? next to audio button?

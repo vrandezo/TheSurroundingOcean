@@ -471,6 +471,9 @@ const display = async (where, lsid, nosense = false) => {
         }
     } else {
         put(where, 'sense', '');
+        if (where === 'center') {
+            hide(true, 'center_sense_dash');
+        }
         let inner = '<ol>';
         for (let i = 1; i <= senses.length; i++) {
             const sense_id = senses[i-1].id;
@@ -485,14 +488,13 @@ const display = async (where, lsid, nosense = false) => {
                 hide( true, 'center_sense_link');
                 const wikipedia_link = await get_wikipedia_link( sense_id );
                 if (wikipedia_link !== null) {
-                    inner += `<a href="${wikipedia_link}"  target="_blank">` +
+                    inner += `&nbsp;&nbsp;<a href="${wikipedia_link}"  target="_blank">` +
                              `<img src="wikipedia.png" class="wikilink" /></a>`
                 }
             }
             inner += `&nbsp;`;
         }
         inner += '</ol>';
-        hide(true, 'center_sense_dash');
         const root = document.getElementById (where + '_sense' );
         root.innerHTML = inner;
         for (let i = 1; i <= senses.length; i++) {
@@ -613,14 +615,6 @@ const previous_meaning = async () => {
     const to = await previous_meaning_index();
     if ( to === null ) return;
     await animate_to_center( 'meanprev', meaning_ring[to] );
-}
-
-const previous_alpha = async () => {
-    await animate_to_center( 'alphaprev', alphaprev_lid );
-}
-
-const next_alpha = async () => {
-    await animate_to_center( 'alphanext', alphanext_lid );
 }
 
 const animate_to_center = async (element, lsid) => {
@@ -1367,12 +1361,12 @@ audio {
 #play_button {
     display: none;
     background-color: linen;
-    position: sticky;
-    bottom: 0.2em;
+    position: fixed;
+    bottom: 29%;
     height: 1.5em;
     width: 1.5em;
     text-align: center;
-    left: 0.2em;
+    left: 29%;
     border-width: thin;
     font-size: xx-large;
     border-radius: 0.2em;
@@ -1618,6 +1612,7 @@ li {
             <i id="center_pos"></i>
             <span id="center_sense_dash">&mdash;</span>
             <span id="center_sense"></span>
+            &nbsp;
             <a id="center_sense_link" href="https://www.wikipedia.org" target="_blank"><img src="wikipedia.png" style="height:0.6em;"></a>
             <audio id="player" src=""></audio>
             <button id="play_button" onclick="play();" class="clickable">🔈</button>
