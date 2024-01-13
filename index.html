@@ -1227,12 +1227,8 @@ body {
 }
 #meanprev_switch {
     position: absolute;
-    top: calc(70% - 1.5em);
+    top: calc(70% - 2em);
     left: 12%;
-    font-size: 200%;
-}
-#meanprev_switch:hover {
-    cursor: pointer;
 }
 #meannext {
     position: absolute;
@@ -1274,12 +1270,8 @@ body {
 }
 #meannext_switch {
     position: absolute;
-    top: calc(70% - 1.5em);
+    top: calc(70% - 2em);
     left: 84%;
-    font-size: 200%;
-}
-#meannext_switch:hover {
-    cursor: pointer;
 }
 #etymon {
     position: absolute;
@@ -1403,93 +1395,46 @@ body {
 audio {
     display: none;
 }
+.click_button {
+    background-color: linen;
+    height: 1.5em;
+    width: 1.5em;
+    text-align: center;
+    border-width: thin;
+    font-size: xx-large;
+    border-radius: 0.2em;
+    border-style: dashed;
+}
+.click_button:hover {
+    color: black;
+    cursor: pointer;
+    background-color: white;
+}
 #play_button {
     display: none;
-    background-color: linen;
     position: fixed;
     bottom: 29%;
-    height: 1.5em;
-    width: 1.5em;
-    text-align: center;
     left: 29%;
-    border-width: thin;
-    font-size: xx-large;
-    border-radius: 0.2em;
-    border-style: dashed;
-}
-#play_button:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
 }
 #help_button {
-    background-color: linen;
     position: absolute;
     bottom: 0.2em;
-    height: 1.5em;
-    width: 1.5em;
-    text-align: center;
     right: 0.2em;
-    border-width: thin;
-    font-size: xx-large;
-    border-radius: 0.2em;
-    border-style: dashed;
-}
-#help_button:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
 }
 #search_button {
-    background-color: linen;
     position: absolute;
     bottom: 0.2em;
     right: 1.9em;
-    height: 1.5em;
-    width: 1.5em;
-    border-width: thin;
-    font-size: xx-large;
-    border-radius: 0.2em;
-    border-style: dashed;
-}
-#search_button:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
 }
 #documentation_button {
-    background-color: linen;
     position: absolute;
     bottom: 0.2em;
     right: 3.6em;
-    height: 1.5em;
-    width: 1.5em;
-    border-width: thin;
-    font-size: xx-large;
-    border-radius: 0.2em;
-    border-style: dashed;
-}
-#documentation_button:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
 }
 #language_button {
-    background-color: linen;
     position: absolute;
     bottom: 0.2em;
     right: 5.3em;
-    height: 1.5em;
-    width: 1.5em;
-    border-width: thin;
-    font-size: xx-large;
-    border-radius: 0.2em;
-    border-style: dashed;
-}
-#language_button:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
 }
 #image {
     width: 100%;
@@ -1648,7 +1593,7 @@ li {
             <span id="meanprev_sense_dash">&mdash;</span>
             <span id="meanprev_sense"></span>
         </div>
-        <div id="meanprev_switch" onclick="meanprev_switch()">🔄</div>
+        <div id="meanprev_switch" class="click_button" onclick="meanprev_switch()">🔄</div>
         <div id="meanprev_cover">
             <div id="meanprev_cover_throbber">⏳</div>
         </div>
@@ -1666,7 +1611,7 @@ li {
             &nbsp;
             <a id="center_sense_link" href="https://www.wikipedia.org" target="_blank"><img src="wikipedia.png" style="height:0.6em;"></a>
             <audio id="player" src=""></audio>
-            <button id="play_button" onclick="play();" class="clickable">🔈</button>
+            <button id="play_button" class="click_button" onclick="play();" class="clickable">🔈</button>
             <a id="wiktionary_link" target="_blank" href="https://www.wiktionary.org"><img src="wiktionary.png" style="height:1.5em;"></a>
             <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1.5em;"></a>
         </div>
@@ -1678,7 +1623,7 @@ li {
             <span id="meannext_sense_dash">&mdash;</span>
             <span id="meannext_sense"></span>
         </div>
-        <div id="meannext_switch" onclick="meannext_switch()">🔄</div>
+        <div id="meannext_switch" class="click_button" onclick="meannext_switch()">🔄</div>
         <div id="meannext_cover">
             <div id="meannext_cover_throbber">⏳</div>
         </div>
@@ -1735,13 +1680,13 @@ li {
         <div id="language_screen">
             <input id="language_input" type="text" />
         </div>
-        <button id="language_button" onclick="click_language()">
+        <button id="language_button" class="click_button" onclick="click_language()">
             <span style="position: absolute; top: 0.3em; left: 0.4em; font-size: large; vertical-align: super;">文</span>
             <span style="position: absolute; bottom: 0.3em; right: 0.4em; font-size: large; vertical-align: sub;">A</span>
         </button>
-        <button id="documentation_button" onclick="parent.open('https://www.wikidata.org/wiki/Wikidata:The_Surrounding_Ocean')">?</button>
-        <button id="search_button" onclick="click_search()">🔍</button>
-        <button id="help_button"
+        <button id="documentation_button" class="click_button" onclick="parent.open('https://www.wikidata.org/wiki/Wikidata:The_Surrounding_Ocean')">?</button>
+        <button id="search_button" class="click_button" onclick="click_search()">🔍</button>
+        <button id="help_button" class="click_button"
                 onmouseenter="display_help()" onmouseleave="hide_help()"
                 ontouchstart="display_help()" ontouchend="hide_help()"
                 onmousedown="display_help()" onmouseup="hide_help()"

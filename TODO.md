@@ -1,11 +1,12 @@
 # Next
-- senses not highlighted when not in focus
+- replace the switch button with two left right buttons each ⟲ ⟳ ◅ ▻ 
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
+- senses not highlighted when not in focus
 - lexemes with several senses have unneccessary mdash outside focus
 - speed up page
  - when switching senses in focus, only need ro reload two of the four axes
