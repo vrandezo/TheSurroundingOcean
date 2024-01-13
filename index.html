@@ -5,7 +5,7 @@
         <title>World of Words</title>
         <script>
 let language = 'en';
-let focus_lid = 'L296427-S1'; // home
+let focus_lid = 'L31761-S1'; // dictionary
 let etymon_lids = [];
 let derived_lids = [];
 let alphaprev_lid = null;
@@ -736,7 +736,7 @@ const set_focus = async () => {
     if (urlParams.has('lid')) {
         focus_lid = urlParams.get('lid');
     } else {
-        focus_lid = 'L296427-S1';
+        focus_lid = 'L31761-S1';
     }
     if (urlParams.has('lang')) {
         language = urlParams.get('lang');

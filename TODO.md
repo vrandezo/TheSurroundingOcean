@@ -1,13 +1,11 @@
 # Next
-- rename it to "The Surrounding Ocean"
+- search for riječnik fails
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- switch start word to L31761
-- search for riječnik fails
 - senses not highlighted when not in focus
 - lexemes with several senses have unneccessary mdash outside focus
 - when switching senses in focus, only need ro reload two of the four axes
