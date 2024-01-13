@@ -7,8 +7,8 @@
 
 # Todos
 - lexemes with several senses have unneccessary mdash outside focus
-- when switching senses in focus, only need ro reload two of the four axes
 - speed up page
+ - when switching senses in focus, only need ro reload two of the four axes
  - audit all awaits if they are really necessary
  - order animation and awaits better
  - add get_entities that takes and returns a list
