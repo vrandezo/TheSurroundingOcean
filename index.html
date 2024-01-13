@@ -596,8 +596,9 @@ const next_free_meaning_index = async (current, step) => {
         return current;
     }
     let countdown = 100;
+    let next = current;
     while (countdown-- > 0) {
-        const next = current + step;
+        next = next + step;
         if (next < 0) {
             next = meaning_ring.length-1;
         }
@@ -612,23 +613,20 @@ const next_free_meaning_index = async (current, step) => {
     return current;
 }
 
-const meanprev_switch = async () => {
-    const to = await next_free_meaning_index(previous_meaning_index, -1);
-    if (to === previous_meaning_index) {
+const mean_switch = async (prev, step) => {
+    const index = prev ? previous_meaning_index : next_meaning_index;
+    const to = await next_free_meaning_index(index, step);
+    // console.log(previous_meaning_index, meaning_ring.indexOf(focus_lid), next_meaning_index, to);
+    if (to === index) {
         return;
     }
-    previous_meaning_index = to;
-    await display( "meanprev", meaning_ring[previous_meaning_index] );
-}
-
-const meannext_switch = async () => {
-    const to = await next_free_meaning_index(next_meaning_index, +1);
-    if (to === next_meaning_index) {
-        return;
+    if (prev) {
+        previous_meaning_index = to;
+    } else {
+        next_meaning_index = to;
     }
-    next_meaning_index = to;
-    await display( "meannext", meaning_ring[next_meaning_index] );
-}
+    await display( prev ? "meanprev" : "meannext", meaning_ring[to] );
+} 
 
 const previous_meaning = async () => {
     if ( previous_meaning_index === null ) return;
@@ -841,14 +839,16 @@ const set_focus = async () => {
     }
     hide((next_meaning_index === null), 'meannext');
     hide((next_meaning_index !== null), 'meannext_empty_cover');
-    hide((meaning_ring.length < 4), 'meannext_switch');
+    hide((meaning_ring.length < 4), 'meannext_switch_left');
+    hide((meaning_ring.length < 4), 'meannext_switch_right');
     uncover("meannext");
     if (previous_meaning_index !== null) {
         await display( 'meanprev', meaning_ring[previous_meaning_index] );
     }
     hide((previous_meaning_index === null), 'meanprev');
     hide((previous_meaning_index !== null), 'meanprev_empty_cover');
-    hide((meaning_ring.length < 4), 'meanprev_switch');
+    hide((meaning_ring.length < 4), 'meanprev_switch_left');
+    hide((meaning_ring.length < 4), 'meanprev_switch_right');
     uncover("meanprev");
 
     hyper_lids = await get_hypers( focus_lid );
@@ -1225,10 +1225,15 @@ body {
     font-size: 200%;
     color: black;
 }
-#meanprev_switch {
+#meanprev_switch_left {
     position: absolute;
     top: calc(70% - 2em);
-    left: 12%;
+    left: calc(12% - 1em);
+}
+#meanprev_switch_right {
+    position: absolute;
+    top: calc(70% - 2em);
+    left: calc(12% + 1em);
 }
 #meannext {
     position: absolute;
@@ -1268,10 +1273,15 @@ body {
     font-size: 200%;
     color: black;
 }
-#meannext_switch {
+#meannext_switch_left {
     position: absolute;
     top: calc(70% - 2em);
-    left: 84%;
+    left: calc(84% - 1em);
+}
+#meannext_switch_right {
+    position: absolute;
+    top: calc(70% - 2em);
+    left: calc(84% + 1em);
 }
 #etymon {
     position: absolute;
@@ -1593,7 +1603,8 @@ li {
             <span id="meanprev_sense_dash">&mdash;</span>
             <span id="meanprev_sense"></span>
         </div>
-        <div id="meanprev_switch" class="click_button" onclick="meanprev_switch()">🔄</div>
+        <div id="meanprev_switch_left" class="click_button" onclick="mean_switch(true, -1)">◅</div>
+        <div id="meanprev_switch_right" class="click_button" onclick="mean_switch(true, +1)">▻</div>
         <div id="meanprev_cover">
             <div id="meanprev_cover_throbber">⏳</div>
         </div>
@@ -1623,7 +1634,8 @@ li {
             <span id="meannext_sense_dash">&mdash;</span>
             <span id="meannext_sense"></span>
         </div>
-        <div id="meannext_switch" class="click_button" onclick="meannext_switch()">🔄</div>
+        <div id="meannext_switch_left" class="click_button" onclick="mean_switch(false, -1)">◅</div>
+        <div id="meannext_switch_right" class="click_button" onclick="mean_switch(false, +1)">▻</div>
         <div id="meannext_cover">
             <div id="meannext_cover_throbber">⏳</div>
         </div>

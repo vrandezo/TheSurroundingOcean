@@ -1,5 +1,10 @@
 # Next
-- replace the switch button with two left right buttons each ⟲ ⟳ ◅ ▻ 
+- speed up page
+ - when switching senses in focus, only need ro reload two of the four axes
+ - audit all awaits if they are really necessary
+ - order animation and awaits better
+ - add get_entities that takes and returns a list
+ - use get_entities that gets more than one entity at once
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
@@ -8,12 +13,6 @@
 # Todos
 - senses not highlighted when not in focus
 - lexemes with several senses have unneccessary mdash outside focus
-- speed up page
- - when switching senses in focus, only need ro reload two of the four axes
- - audit all awaits if they are really necessary
- - order animation and awaits better
- - add get_entities that takes and returns a list
- - use get_entities that gets more than one entity at once
 - navigate with keyboard through search results
 - navigate with keyboard through lists
 - etymon also P5425 (has Han characters)
