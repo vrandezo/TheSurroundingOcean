@@ -1,18 +1,12 @@
 # Next
-- speed up page
- - when switching senses in focus, only need ro reload two of the four axes
- - audit all awaits if they are really necessary
- - order animation and awaits better
- - add get_entities that takes and returns a list
- - use get_entities that gets more than one entity at once
+- senses not highlighted when not in focus
+- lexemes with several senses have unneccessary mdash outside focus
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- senses not highlighted when not in focus
-- lexemes with several senses have unneccessary mdash outside focus
 - navigate with keyboard through search results
 - navigate with keyboard through lists
 - etymon also P5425 (has Han characters)
@@ -45,3 +39,6 @@
 - deal better with more than one audio
 - what happens when loaded with invalid lid
 - allow to swipe on mobile
+- add get_entities that takes and returns a list
+- use get_entities that gets more than one entity at once
+

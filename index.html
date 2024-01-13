@@ -574,7 +574,7 @@ const next_sense = async () => {
         current = senses.indexOf( focus_lid );
     }
     if ( current + 1 < senses.length ) {
-        move_to( senses[current + 1] );
+        move_to( senses[current + 1], true );
     }
 };
 
@@ -582,7 +582,7 @@ const previous_sense = async () => {
     const senses = await get_senses( focus_lid );
     const current = senses.indexOf( focus_lid );
     if ( current > 0 ) {
-        move_to( senses[current - 1] );
+        move_to( senses[current - 1], true );
     }
 };
 
@@ -641,11 +641,11 @@ const animate_to_center = async (element, lsid) => {
     }, 500);
 }
 
-const move_to = async (lid) => {
+const move_to = async (lid, same_lexeme = false) => {
     const url = new URL( window.location );
     url.searchParams.set('lid', lid);
     window.history.pushState({ 'lid': lid }, '', url);
-    await set_focus();
+    await set_focus(same_lexeme);
 }
 
 const get_hypers = async (lsid) => {
@@ -728,7 +728,7 @@ const uncover = (element) => {
     document.getElementById(element + '_cover').style.display = 'none';
 };
 
-const set_focus = async () => {
+const set_focus = async (same_lexeme = false) => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     if (urlParams.has('lid')) {
@@ -741,131 +741,157 @@ const set_focus = async () => {
     }
 
     cover("hyper");
-    cover("alphaprev");
-    cover("derived");
     cover("meanprev");
     cover("meannext");
-    cover("etymon");
-    cover("alphanext");
     cover("hypo");
+    if (!same_lexeme) {
+        cover("alphaprev");
+        cover("derived");
+        cover("etymon");
+        cover("alphanext");
+    }
 
     await display('center', focus_lid);
 
     const lexeme = await get_entity( focus_lid );
 
-    const { image_page, image_link } = await get_image( focus_lid );
-    if (image_link !== null) {
-        document.getElementById('image').src = image_link;
-        document.getElementById('image_link').href = image_page;
-    }
-    hide((image_link === null), 'image_link');
+    (async () => {
+        const { image_page, image_link } = await get_image( focus_lid );
+        if (image_link !== null) {
+            document.getElementById('image').src = image_link;
+            document.getElementById('image_link').href = image_page;
+        }
+        hide((image_link === null), 'image_link');
+    })();
 
     document.getElementById('center_link').href = 'https://www.wikidata.org/wiki/Lexeme:' + lid_from_lsid( focus_lid );
 
-    const wiktionary_link = await get_wiktionary_from_lid( focus_lid );
-    hide((wiktionary_link === null), 'wiktionary_link');
-    if (wiktionary_link !== null) {
-        document.getElementById('wiktionary_link').href = wiktionary_link;
-    }
-
-    let no_audio = true;
-    for (let form of lexeme.forms) {
-        // console.log(form);
-        if ('P443' in form.claims) {
-            const filename = form.claims.P443[0].mainsnak.datavalue.value;
-            // console.log(filename);
-            const response = await fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&titles=File%3A' + filename + '&formatversion=2&iiprop=url&origin=*');
-            const answer = await response.json();
-            const fileurl = answer.query.pages[0].imageinfo[0].url;
-            document.getElementById('player').src = fileurl;
-            no_audio = false;
-            break;
+    (async () => {
+        const wiktionary_link = await get_wiktionary_from_lid( focus_lid );
+        hide((wiktionary_link === null), 'wiktionary_link');
+        if (wiktionary_link !== null) {
+            document.getElementById('wiktionary_link').href = wiktionary_link;
         }
-    }
-    hide(no_audio, 'player');
-    hide(no_audio, 'play_button', 'inline');
+    })();
 
-    etymon_lids = [];
-    if ('P5191' in lexeme.claims) {
-        const etymons = lexeme.claims.P5191;
-        for (let etymon_snak of etymons) {
-            if (etymon_snak.mainsnak.snaktype !== 'value') {
-                continue;
+    (async () => {
+        let no_audio = true;
+        for (let form of lexeme.forms) {
+            // console.log(form);
+            if ('P443' in form.claims) {
+                const filename = form.claims.P443[0].mainsnak.datavalue.value;
+                // console.log(filename);
+                const response = await fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&titles=File%3A' + filename + '&formatversion=2&iiprop=url&origin=*');
+                const answer = await response.json();
+                const fileurl = answer.query.pages[0].imageinfo[0].url;
+                document.getElementById('player').src = fileurl;
+                no_audio = false;
+                break;
             }
-            const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
-            etymon_lids.push( etymon_id );
         }
-    }
-    if ('P5238' in lexeme.claims) {
-        const etymons = lexeme.claims.P5238;
-        for (let etymon_snak of etymons) {
-            if (etymon_snak.mainsnak.snaktype !== 'value') {
-                continue;
+        hide(no_audio, 'player');
+        hide(no_audio, 'play_button', 'inline');
+    })();
+
+    (async () => {
+        etymon_lids = [];
+        if ('P5191' in lexeme.claims) {
+            const etymons = lexeme.claims.P5191;
+            for (let etymon_snak of etymons) {
+                if (etymon_snak.mainsnak.snaktype !== 'value') {
+                    continue;
+                }
+                const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
+                etymon_lids.push( etymon_id );
             }
-            const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
-            etymon_lids.push( etymon_id );
         }
-    }
-    await display_list( 'etymon', etymon_lids );
-    hide((etymon_lids.length === 0), 'etymon');
-    hide((etymon_lids.length !== 0), 'etymon_empty_cover');
-    uncover("etymon");
+        if ('P5238' in lexeme.claims) {
+            const etymons = lexeme.claims.P5238;
+            for (let etymon_snak of etymons) {
+                if (etymon_snak.mainsnak.snaktype !== 'value') {
+                    continue;
+                }
+                const etymon_id = etymon_snak.mainsnak.datavalue.value.id;
+                etymon_lids.push( etymon_id );
+            }
+        }
+        await display_list( 'etymon', etymon_lids );
+        hide((etymon_lids.length === 0), 'etymon');
+        hide((etymon_lids.length !== 0), 'etymon_empty_cover');
+        uncover("etymon");
+    })();
 
-    derived_lids = await get_derived( focus_lid );
-    if (derived_lids.length > 0) {
-        await display_list( 'derived', derived_lids );
-    }
-    hide((derived_lids.length === 0), 'derived');
-    hide((derived_lids.length !== 0), 'derived_empty_cover');
-    uncover("derived");
+    (async () => {
+        derived_lids = await get_derived( focus_lid );
+        if (derived_lids.length > 0) {
+            await display_list( 'derived', derived_lids );
+        }
+        hide((derived_lids.length === 0), 'derived');
+        hide((derived_lids.length !== 0), 'derived_empty_cover');
+        uncover("derived");
+    })();
 
-    alphaprev_lid = await get_alphaprev( focus_lid );
-    // console.log( alphaprev_lid );
-    if (alphaprev_lid !== null) { await display( 'alphaprev', alphaprev_lid ); }
-    hide((alphaprev_lid === null), 'alphaprev');
-    hide((alphaprev_lid !== null), 'alphaprev_empty_cover');
-    uncover("alphaprev");
+    (async () => {
+        alphaprev_lid = await get_alphaprev( focus_lid );
+        // console.log( alphaprev_lid );
+        if (alphaprev_lid !== null) { await display( 'alphaprev', alphaprev_lid ); }
+        hide((alphaprev_lid === null), 'alphaprev');
+        hide((alphaprev_lid !== null), 'alphaprev_empty_cover');
+        uncover("alphaprev");
+    })();
 
-    alphanext_lid = await get_alphanext( focus_lid );
-    // console.log( alphanext_lid );
-    if (alphanext_lid !== null) { await display( 'alphanext', alphanext_lid ); }
-    hide((alphanext_lid === null), 'alphanext');
-    hide((alphanext_lid !== null), 'alphanext_empty_cover');
-    uncover("alphanext");
+    (async () => {
+        alphanext_lid = await get_alphanext( focus_lid );
+        // console.log( alphanext_lid );
+        if (alphanext_lid !== null) { await display( 'alphanext', alphanext_lid ); }
+        hide((alphanext_lid === null), 'alphanext');
+        hide((alphanext_lid !== null), 'alphanext_empty_cover');
+        uncover("alphanext");
+    })();
 
-    [ meaning_ring, previous_meaning_index, next_meaning_index ] = await get_meaning_ring( focus_lid );
-    if (next_meaning_index !== null) {
-        await display( 'meannext', meaning_ring[next_meaning_index] );
-    }
-    hide((next_meaning_index === null), 'meannext');
-    hide((next_meaning_index !== null), 'meannext_empty_cover');
-    hide((meaning_ring.length < 4), 'meannext_switch_left');
-    hide((meaning_ring.length < 4), 'meannext_switch_right');
-    uncover("meannext");
-    if (previous_meaning_index !== null) {
-        await display( 'meanprev', meaning_ring[previous_meaning_index] );
-    }
-    hide((previous_meaning_index === null), 'meanprev');
-    hide((previous_meaning_index !== null), 'meanprev_empty_cover');
-    hide((meaning_ring.length < 4), 'meanprev_switch_left');
-    hide((meaning_ring.length < 4), 'meanprev_switch_right');
-    uncover("meanprev");
+    (async () => {
+        [ meaning_ring, previous_meaning_index, next_meaning_index ] = await get_meaning_ring( focus_lid );
+        (async () => {
+            if (next_meaning_index !== null) {
+                await display( 'meannext', meaning_ring[next_meaning_index] );
+            }
+            hide((next_meaning_index === null), 'meannext');
+            hide((next_meaning_index !== null), 'meannext_empty_cover');
+            hide((meaning_ring.length < 4), 'meannext_switch_left');
+            hide((meaning_ring.length < 4), 'meannext_switch_right');
+            uncover("meannext");
+        })();
+        (async () => {
+            if (previous_meaning_index !== null) {
+                await display( 'meanprev', meaning_ring[previous_meaning_index] );
+            }
+            hide((previous_meaning_index === null), 'meanprev');
+            hide((previous_meaning_index !== null), 'meanprev_empty_cover');
+            hide((meaning_ring.length < 4), 'meanprev_switch_left');
+            hide((meaning_ring.length < 4), 'meanprev_switch_right');
+            uncover("meanprev");
+        })();
+    })();
 
-    hyper_lids = await get_hypers( focus_lid );
-    if (hyper_lids.length > 0) {
-        await display_list( 'hyper', hyper_lids );
-    }
-    hide((hyper_lids.length === 0), 'hyper');
-    hide((hyper_lids.length !== 0), 'hyper_empty_cover');
-    uncover("hyper");
+    (async () => {
+        hyper_lids = await get_hypers( focus_lid );
+        if (hyper_lids.length > 0) {
+            await display_list( 'hyper', hyper_lids );
+        }
+        hide((hyper_lids.length === 0), 'hyper');
+        hide((hyper_lids.length !== 0), 'hyper_empty_cover');
+        uncover("hyper");
+    })();
 
-    hypo_lids = await get_hypos( focus_lid );
-    if (hypo_lids.length > 0) {
-        await display_list( 'hypo', hypo_lids );
-    }
-    hide((hypo_lids.length === 0), 'hypo');
-    hide((hypo_lids.length !== 0), 'hypo_empty_cover');
-    uncover("hypo");
+    (async () => {
+        hypo_lids = await get_hypos( focus_lid );
+        if (hypo_lids.length > 0) {
+            await display_list( 'hypo', hypo_lids );
+        }
+        hide((hypo_lids.length === 0), 'hypo');
+        hide((hypo_lids.length !== 0), 'hypo_empty_cover');
+        uncover("hypo");
+    })();
 };
 
 const play = () => {
