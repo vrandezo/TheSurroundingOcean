@@ -1,7 +1,10 @@
-I like to start projects, and love if someone else picks them up. I don't
-usually maintain projects myself in the long run.
+I like to start projects.
+And I am happy for other people to contribute to them!
 
-If you want to work on this project, please reach out to me.
-I will be happy to hand it over to you.
+If you want to change something, add something, or contribute to the
+project, please reach out to me or send a PR.
 
-The best way to reach me is probably on my [Wikidata User Talk page](https://www.wikidata.org/wiki/User_talk:Denny).
+If you want to take over, I will be happy to hand it over to you.
+
+The best way to reach me is probably on my
+[Wikidata User Talk page](https://www.wikidata.org/wiki/User_talk:Denny).
