@@ -1,11 +1,16 @@
 # Next
-- change one translation or synonym (mahir) 🔄
+- rename it to "The Surrounding Ocean"
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
+- switch start word to L31761
+- search for riječnik fails
+- senses not highlighted when not in focus
+- lexemes with several senses have unneccessary mdash outside focus
+- when switching senses in focus, only need ro reload two of the four axes
 - speed up page
  - audit all awaits if they are really necessary
  - order animation and awaits better
@@ -42,3 +47,4 @@
 - navigation animation from lists takes always the whole list instead of only the single entry (inline is not animatable)
 - deal better with more than one audio
 - what happens when loaded with invalid lid
+- allow to swipe on mobile

@@ -11,6 +11,8 @@ let derived_lids = [];
 let alphaprev_lid = null;
 let alphanext_lid = null;
 let meaning_ring = [];
+let next_meaning_index = null;
+let previous_meaning_index = null;
 let hyper_lids = [];
 let hypo_lids = [];
 
@@ -291,7 +293,7 @@ const get_meaning_ring = async ( lsid ) => {
     if ( !is_lsid(lsid) ) {
         const senses = await get_senses(lsid);
         if ( senses.length === 0 ) {
-            return [ lsid ];
+            return [ [ lsid ], null, null ];
         }
         lsid = senses[0];
     }
@@ -303,7 +305,7 @@ const get_meaning_ring = async ( lsid ) => {
         sense = s;
     }
     if (sense === null) {
-        return result;
+        return [ result, null, null ];
     }
 
     // console.log(sense);
@@ -353,7 +355,31 @@ const get_meaning_ring = async ( lsid ) => {
 
     // console.log( result );
     result = [...new Set(result)].sort();
-    return result;
+
+    if (result.length === 1) {
+        return [ result, null, null ];
+    }
+
+    const current_index = result.indexOf( lsid );
+
+    if (result.length === 2) {
+        if (current_index === 1) {
+            return [ result, 0, null ];
+        } else {
+            return [ result, null, 1 ];
+        }
+    }
+
+    let previous = current_index - 1;
+    if ( previous < 0 ) {
+        previous = result.length - 1;
+    }
+    let next = current_index + 1;
+    if ( next >= result.length ) {
+        next = 0;
+    }
+
+    return [ result, previous, next ];
 };
 
 const get_wikipedia_link = async ( lsid ) => {
@@ -560,61 +586,53 @@ const previous_sense = async () => {
     }
 };
 
-const next_meaning_index = async () => {
-    if (meaning_ring.length === 1) {
-        return null;
-    }
-    let current_lid = focus_lid;
-    if ( !is_lsid( current_lid ) ) {
-        const senses = await get_senses( focus_lid );
-        current_lid = senses[0];
-    }
-    const current_index = meaning_ring.indexOf( current_lid );
-    if (meaning_ring.length === 2) {
-        if (current_index === 1) {
-            return null;
-        }
-    }
-    let new_index = current_index + 1;
-    if ( new_index === meaning_ring.length ) {
-        new_index = 0;
-    }
-    return new_index;
-};
-
 const next_meaning = async () => {
-    const to = await next_meaning_index();
-    if ( to === null ) return;
-    await animate_to_center( 'meannext', meaning_ring[to] );
+    if ( next_meaning_index === null ) return;
+    await animate_to_center( 'meannext', meaning_ring[next_meaning_index] );
 }
 
-const previous_meaning_index = async () => {
-    if (meaning_ring.length === 1) {
-        return null;
+const next_free_meaning_index = async (current, step) => {
+    if ((meaning_ring.length < 4) || (current === null)) {
+        return current;
     }
-    let current_lid = focus_lid;
-    if ( !is_lsid( current_lid ) ) {
-        const senses = await get_senses( focus_lid );
-        current_lid = senses[0];
-    }
-    const current_index = meaning_ring.indexOf( current_lid );
-    if (meaning_ring.length === 2) {
-        if (current_index === 0) {
-            return null;
+    let countdown = 100;
+    while (countdown-- > 0) {
+        const next = current + step;
+        if (next < 0) {
+            next = meaning_ring.length-1;
         }
+        if (next >= meaning_ring.length) {
+            next = 0;
+        }
+        if (next === previous_meaning_index) continue;
+        if (next === next_meaning_index) continue;
+        if (next === meaning_ring.indexOf( focus_lid )) continue;
+        return next;
     }
-    let new_index = current_index - 1;
-    if ( new_index < 0 ) {
-        new_index =  meaning_ring.length - 1;
+    return current;
+}
+
+const meanprev_switch = async () => {
+    const to = await next_free_meaning_index(previous_meaning_index, -1);
+    if (to === previous_meaning_index) {
+        return;
     }
-    return new_index;
-    move_to( meaning_ring[ new_index ] );
-};
+    previous_meaning_index = to;
+    await display( "meanprev", meaning_ring[previous_meaning_index] );
+}
+
+const meannext_switch = async () => {
+    const to = await next_free_meaning_index(next_meaning_index, +1);
+    if (to === next_meaning_index) {
+        return;
+    }
+    next_meaning_index = to;
+    await display( "meannext", meaning_ring[next_meaning_index] );
+}
 
 const previous_meaning = async () => {
-    const to = await previous_meaning_index();
-    if ( to === null ) return;
-    await animate_to_center( 'meanprev', meaning_ring[to] );
+    if ( previous_meaning_index === null ) return;
+    await animate_to_center( 'meanprev', meaning_ring[previous_meaning_index] );
 }
 
 const animate_to_center = async (element, lsid) => {
@@ -817,20 +835,20 @@ const set_focus = async () => {
     hide((alphanext_lid !== null), 'alphanext_empty_cover');
     uncover("alphanext");
 
-    meaning_ring = await get_meaning_ring( focus_lid );
-    const nmi = await next_meaning_index();
-    if (nmi !== null) {
-        await display( 'meannext', meaning_ring[nmi] );
+    [ meaning_ring, previous_meaning_index, next_meaning_index ] = await get_meaning_ring( focus_lid );
+    if (next_meaning_index !== null) {
+        await display( 'meannext', meaning_ring[next_meaning_index] );
     }
-    hide((nmi === null), 'meannext');
-    hide((nmi !== null), 'meannext_empty_cover');
+    hide((next_meaning_index === null), 'meannext');
+    hide((next_meaning_index !== null), 'meannext_empty_cover');
+    hide((meaning_ring.length < 4), 'meannext_switch');
     uncover("meannext");
-    const pmi = await previous_meaning_index();
-    if (pmi !== null) {
-        await display( 'meanprev', meaning_ring[pmi] );
+    if (previous_meaning_index !== null) {
+        await display( 'meanprev', meaning_ring[previous_meaning_index] );
     }
-    hide((pmi === null), 'meanprev');
-    hide((pmi !== null), 'meanprev_empty_cover');
+    hide((previous_meaning_index === null), 'meanprev');
+    hide((previous_meaning_index !== null), 'meanprev_empty_cover');
+    hide((meaning_ring.length < 4), 'meanprev_switch');
     uncover("meanprev");
 
     hyper_lids = await get_hypers( focus_lid );
@@ -1055,7 +1073,7 @@ body {
 }
 #wiktionary_link {
     position: fixed;
-    right: calc(29% + 2.2em);
+    right: calc(29% + 3.2em);
     bottom: 29%;
 }
 #hyper {
@@ -1078,6 +1096,7 @@ body {
     position: relative;
     text-align: center;
     font-size: 200%;
+    color: rgb(220, 180, 180);
 }
 #hyper_cover {
     position: absolute;
@@ -1114,6 +1133,7 @@ body {
     position: relative;
     text-align: center;
     font-size: 200%;
+    color: rgb(220, 180, 180);
 }
 #alphaprev_cover {
     position: absolute;
@@ -1149,6 +1169,7 @@ body {
 #derived_empty {
     position: relative;
     text-align: center;
+    color: rgb(220, 180, 180);
     font-size: 200%;
 }
 #derived_cover {
@@ -1187,6 +1208,7 @@ body {
     top: 20%;
     text-align: center;
     font-size: 200%;
+    color: rgb(220, 180, 180);
 }
 #meanprev_cover {
     position: absolute;
@@ -1202,6 +1224,15 @@ body {
     top: 20%;
     font-size: 200%;
     color: black;
+}
+#meanprev_switch {
+    position: absolute;
+    top: calc(70% - 1.5em);
+    left: 12%;
+    font-size: 200%;
+}
+#meanprev_switch:hover {
+    cursor: pointer;
 }
 #meannext {
     position: absolute;
@@ -1224,6 +1255,7 @@ body {
     top: 20%;
     text-align: center;
     font-size: 200%;
+    color: rgb(220, 180, 180);
 }
 #meannext_cover {
     position: absolute;
@@ -1239,6 +1271,15 @@ body {
     top: 20%;
     font-size: 200%;
     color: black;
+}
+#meannext_switch {
+    position: absolute;
+    top: calc(70% - 1.5em);
+    left: 84%;
+    font-size: 200%;
+}
+#meannext_switch:hover {
+    cursor: pointer;
 }
 #etymon {
     position: absolute;
@@ -1261,6 +1302,7 @@ body {
     position: relative;
     text-align: center;
     font-size: 200%;
+    color: rgb(220, 180, 180);
 }
 #etymon_cover {
     position: absolute;
@@ -1296,6 +1338,7 @@ body {
     position: relative;
     text-align: center;
     font-size: 200%;
+    color: rgb(220, 180, 180);
 }
 #alphanext_cover {
     position: absolute;
@@ -1331,6 +1374,7 @@ body {
     position: relative;
     text-align: center;
     font-size: 200%;
+    color: rgb(220, 180, 180);
 }
 #hypo_cover {
     position: absolute;
@@ -1604,6 +1648,7 @@ li {
             <span id="meanprev_sense_dash">&mdash;</span>
             <span id="meanprev_sense"></span>
         </div>
+        <div id="meanprev_switch" onclick="meanprev_switch()">🔄</div>
         <div id="meanprev_cover">
             <div id="meanprev_cover_throbber">⏳</div>
         </div>
@@ -1622,8 +1667,8 @@ li {
             <a id="center_sense_link" href="https://www.wikipedia.org" target="_blank"><img src="wikipedia.png" style="height:0.6em;"></a>
             <audio id="player" src=""></audio>
             <button id="play_button" onclick="play();" class="clickable">🔈</button>
-            <a id="wiktionary_link" target="_blank" href="https://www.wiktionary.org"><img src="wiktionary.png" style="height:1em;"></a>
-            <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1em;"></a>
+            <a id="wiktionary_link" target="_blank" href="https://www.wiktionary.org"><img src="wiktionary.png" style="height:1.5em;"></a>
+            <a id="center_link" target="_blank" href="https://www.wikidata.org/wiki/Wikidata:Main_Page"><img src="wikidata.png" style="height:1.5em;"></a>
         </div>
         <div id="meannext" onclick="next_meaning()" class="clickable">
             <b id="meannext_lemma"></b>
@@ -1633,6 +1678,7 @@ li {
             <span id="meannext_sense_dash">&mdash;</span>
             <span id="meannext_sense"></span>
         </div>
+        <div id="meannext_switch" onclick="meannext_switch()">🔄</div>
         <div id="meannext_cover">
             <div id="meannext_cover_throbber">⏳</div>
         </div>
