@@ -1,5 +1,4 @@
 # Next
-- senses not highlighted when not in focus
 - lexemes with several senses have unneccessary mdash outside focus
 
 # Bug
@@ -7,8 +6,12 @@
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
+- Show antonym as a link at the end of the sense
+ - maybe other special relations?
 - navigate with keyboard through search results
 - navigate with keyboard through lists
+ - press shift + z, q, etc. highlight the possible result, and go only letting go shift
+- keyboard navigation for the meaning switches
 - etymon also P5425 (has Han characters)
 - prevent keyboard or click events when not ready
 - add IPA, syllabilization? next to audio button?
@@ -31,8 +34,6 @@
   - Solve by putting >= instead of >
   - increase the limit from 10 considerably for speed up
 - on keyboard navigation, when navigating to an empty field, what happens? (eg no etymon but press z)
-- Show antonym as a link at the end of the sense
- - maybe other special relations?
 - Show links to other dictionaries
 - Use Wikifunctions for transliterations e.g. of Hangul or Harigana or Greek or Cyrillic
 - navigation animation from lists takes always the whole list instead of only the single entry (inline is not animatable)
@@ -41,4 +42,3 @@
 - allow to swipe on mobile
 - add get_entities that takes and returns a list
 - use get_entities that gets more than one entity at once
-
