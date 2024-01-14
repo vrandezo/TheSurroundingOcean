@@ -1,5 +1,4 @@
 # Next
-- do viewport for mobile (nikki)
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
