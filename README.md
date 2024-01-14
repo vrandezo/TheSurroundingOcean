@@ -8,3 +8,5 @@ To start go to [The Surrounding Ocean](https://vrandezo.github.io/TheSurrounding
 
 For a more detailed description, go to
 [the Wikidata page of The Surrounding Ocean](https://www.wikidata.org/wiki/Wikidata:The_Surrounding_Ocean)
+
+Thanks to Lydia Pintscher, Michael Ringgard, Mahir Morshed, Bruno Cartoni, Stuart Robinson, Nick Wilson, James Forrester, and Kamara Vrandečić for being early testers and their feedback.
