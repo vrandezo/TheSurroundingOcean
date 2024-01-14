@@ -1454,10 +1454,12 @@ audio {
     border-radius: 0.2em;
     border-style: dashed;
 }
-.click_button:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
+@media (hover: hover) {
+    .click_button:hover {
+        color: black;
+        cursor: pointer;
+        background-color: white;
+    }
 }
 #play_button {
     display: none;
@@ -1493,10 +1495,12 @@ audio {
     float: right;
     display: none;
 }
-.clickable:hover {
-    color: black;
-    cursor: pointer;
-    background-color: white;
+@media (hover: hover) {
+        .clickable:hover {
+        color: black;
+        cursor: pointer;
+        background-color: white;
+    }
 }
 #center_sense_link {
     display: none;
@@ -1572,9 +1576,11 @@ li {
     border-style: solid;
     background-color: white;
 }
-.search_result:hover {
-    background-color: azure;
-    cursor: pointer;
+@media (hover: hover) {
+    .search_result:hover {
+        background-color: azure;
+        cursor: pointer;
+    }
 }
 #language_screen {
     display: none;

@@ -1,13 +1,12 @@
 # Next
+- think about behaviour of navi button (show on tap?) (nikki)
 
 # Bug
 - get_entity seems not working well with redirects, try L6798, see L6799 for example
  - index.html?lid=L1083187-S3 - problem with redirects
 
 # Todos
-- think about behaviour of navi button (show on tap?) (nikki)
 - cancel overlays with close button or tap on background (nikki)
-- highlight seems to persist on mobile after tap (nikki)
 - lexemes with several senses have unneccessary mdash outside focus
 - Show antonym as a link at the end of the sense
  - maybe other special relations?
